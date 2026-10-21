@@ -19,6 +19,7 @@ public class DBController {
     public DBController() {
         try {
             this.con = DriverManager.getConnection(URL_MYSQL, USER, PASSWORD);
+            System.out.println("Conexión establecida.");
         } catch (SQLException ex) {
             System.err.println("Error de conexión");
         }
