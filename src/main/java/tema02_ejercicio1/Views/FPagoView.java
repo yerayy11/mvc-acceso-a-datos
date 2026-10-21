@@ -166,7 +166,7 @@ public class FPagoView extends javax.swing.JDialog {
 
     private void bAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAltaActionPerformed
         try{
-            if(CONTR.insert(new FPago(tCodigo.getText().trim(), tDescripcion.getText().trim(), Integer.parseInt(tNRecivos.getText().trim()))) == 0){
+            if(CONTR.create(new FPago(tCodigo.getText().trim(), tDescripcion.getText().trim(), Integer.parseInt(tNRecivos.getText().trim()))) == 0){
                 JOptionPane.showMessageDialog(this, "Error al insertar la nueva Forma de Pago");
                 return;
             }
@@ -196,7 +196,7 @@ public class FPagoView extends javax.swing.JDialog {
     private void bBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBuscarActionPerformed
         FPago encontrado;
         String codigo;
-        if((encontrado = CONTR.selectById(new FPago( (codigo = tCodigo.getText().trim()), null, 0))) == null){
+        if((encontrado = CONTR.findById(new FPago( (codigo = tCodigo.getText().trim()), null, 0))) == null){
             JOptionPane.showMessageDialog(this, "Error al buscar la forma de pago con código: "+ codigo);
             return;
         }
@@ -239,7 +239,7 @@ public class FPagoView extends javax.swing.JDialog {
     private void rellenarTabla() {
         DefaultTableModel dtm = (DefaultTableModel) this.jTable1.getModel();
         dtm.setRowCount(0);
-        ArrayList<FPago> fPagos = CONTR.selectAll();
+        ArrayList<FPago> fPagos = CONTR.findAll();
         if(fPagos == null){
             JOptionPane.showMessageDialog(this, "Error al cargar los datos");
             return;

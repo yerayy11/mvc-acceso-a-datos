@@ -2,6 +2,9 @@ package tema02_ejercicio1.Controllers;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -10,16 +13,20 @@ import tema02_ejercicio1.Models.Prestamov3;
 public class Prestamosv3Controller {
 
     private Connection con;
-
+    private String sentencia;
+    private PreparedStatement ps;
+    private ResultSet rs;
+    private int fila;
     public Prestamosv3Controller(Connection con) {
         if(this.con == null) this.con = con;    
     }
-    
+      //findAllLazy buscar prestamos sin atributos de tipo collecion (arraylist, list)
     public ArrayList<Prestamov3> findAllLazy(){
+        
         
         return null;
     }
-    
+        //findAllEager busca con todo
     public ArrayList<Prestamov3> findAllEager(){
         
         return null;
@@ -27,20 +34,63 @@ public class Prestamosv3Controller {
     
     public Prestamov3 findById(Prestamov3 pId){
         
+        
         return null;
     }
     
     public int create(Prestamov3 prestamo){
         
+        try {
+            sentencia = "INSERT INTO PRESTAMOS VALUES (?,?,?,?,?)";
+            
+            ps = con.prepareStatement(sentencia);
+            
+            ps.setInt(1, prestamo.getnNumPrest());
+            ps.setDate(2, Date.valueOf(prestamo.getdFecPrest()));
+            ps.setInt(3, prestamo.getnImpPrest());
+            ps.setInt(4, prestamo.getnImpReci());
+            ps.setString(5, prestamo.getcCodFPago().getcCodFPago());
+            
+            return ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        //el metodo ha fallado
         return 0;
     }
     
     public int update(Prestamov3 prestamo){
         
+        sentencia = "UPDATE PRESTAMOS SET dFecPrest= ?, nImpPrest = ?, nImpReci = ?, cCodFPago = ? WHERE nNumPrest = ?";
+        
+        try {
+            ps = con.prepareStatement(sentencia);
+            ps.setDate(1, Date.valueOf(prestamo.getdFecPrest()));
+            ps.setInt(2, prestamo.getnImpPrest());
+            ps.setInt(3, prestamo.getnImpReci());
+            ps.setString(4, prestamo.getcCodFPago().getcCodFPago());
+            ps.setInt(5, prestamo.getnNumPrest());
+
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
         return 0;
     }
     
     public int delete(Prestamov3 prestamo){
+        
+        sentencia = "DELETE FROM PRESTAMOS WHERE nNumPrest = ? ";
+        try {
+            ps = con.prepareStatement(sentencia);
+            
+            ps.setInt(1, prestamo.getnNumPrest());
+            return ps.executeUpdate();
+        } catch (SQLException ex) {
+                        System.err.println(ex.getMessage());
+        }
         
         return 0;
     }
