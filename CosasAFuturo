@@ -1,0 +1,33 @@
+//metodo para obtener los recibos generados. Usa procedimiento propio de la base de datos llamado sp_GENEREARRECIBOS el cual tiene dos parámetros: uno de entrada y otro de salida
+
+public int generarRecibos(int numPrestamo) {
+
+    int recibosGenerados = -1;
+
+    if (getCon() != null) {
+
+        try {
+
+            CallableStatement cs =
+                    con.prepareCall("{CALL sp_GENERARRECIBOS(?, ?)}");
+
+            // Parámetro de entrada
+            cs.setInt(1, numPrestamo);
+
+            // Parámetro de salida
+            cs.registerOutParameter(2, Types.INTEGER);
+
+            cs.execute();
+
+            recibosGenerados = cs.getInt(2);
+
+            cs.close();
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    return recibosGenerados;
+}
