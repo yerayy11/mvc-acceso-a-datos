@@ -1,10 +1,15 @@
 package tema02_ejercicio1.Views;
 
+import tema02_ejercicio1.Controllers.Prestamosv3Controller;
+
 public class PrestamoView extends javax.swing.JDialog {
+    
+    private final Prestamosv3Controller CONTR;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.CONTR = new Prestamosv3Controller(Index.contr.getCon());
     }
 
     @SuppressWarnings("unchecked")

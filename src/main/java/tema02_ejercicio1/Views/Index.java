@@ -22,6 +22,7 @@ public class Index extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         bFPago = new javax.swing.JButton();
+        bPrestamo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -35,6 +36,13 @@ public class Index extends javax.swing.JFrame {
         bFPago.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         bFPago.addActionListener(this::bFPagoActionPerformed);
         jToolBar1.add(bFPago);
+
+        bPrestamo.setText("Prestamos");
+        bPrestamo.setFocusable(false);
+        bPrestamo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bPrestamo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bPrestamo.addActionListener(this::bPrestamoActionPerformed);
+        jToolBar1.add(bPrestamo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -66,8 +74,13 @@ public class Index extends javax.swing.JFrame {
         new FPagoView(this, true).setVisible(true);
     }//GEN-LAST:event_bFPagoActionPerformed
 
+    private void bPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPrestamoActionPerformed
+        new PrestamoView(this, true).setVisible(true);
+    }//GEN-LAST:event_bPrestamoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bFPago;
+    private javax.swing.JButton bPrestamo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
