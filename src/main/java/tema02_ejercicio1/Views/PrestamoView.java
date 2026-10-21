@@ -1,6 +1,7 @@
 package tema02_ejercicio1.Views;
 
 import tema02_ejercicio1.Controllers.Prestamosv3Controller;
+import tema02_ejercicio1.Models.FPago;
 
 public class PrestamoView extends javax.swing.JDialog {
     
@@ -108,7 +109,7 @@ public class PrestamoView extends javax.swing.JDialog {
 
         jLabel5.setText("Forma de Pago");
 
-        jcFormasPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
+        jcFormasPago.setModel(new javax.swing.DefaultComboBoxModel<>());
 
         bBuscar.setText("Buscar");
 
