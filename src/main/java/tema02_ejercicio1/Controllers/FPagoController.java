@@ -6,6 +6,9 @@ import tema02_ejercicio1.Models.FPago;
 
 public class FPagoController {
     private Connection con;
+    private String sentencia;
+    private PreparedStatement ps;
+    private ResultSet rs;
 
     public FPagoController(Connection con){
         if(this.con == null) this.con = con;
@@ -13,10 +16,13 @@ public class FPagoController {
     
       public ArrayList<FPago> findAll(){
           
-        try (ResultSet datos = con.prepareStatement("SELECT * FROM FPAGO").executeQuery();) {
+        try {
+            sentencia = "SELECT * FROM FPAGO";
+            ps = con.prepareStatement(sentencia);
+            rs = ps.executeQuery();
             ArrayList<FPago> fPagos = new ArrayList<>();
-            while(datos.next()){
-                fPagos.add(new FPago(datos.getString("CCODFPAGO"), datos.getString("CDESFPAGO"), datos.getInt("NRECIBOS")));
+            while(rs.next()){
+                fPagos.add(new FPago(rs.getString("CCODFPAGO"), rs.getString("CDESFPAGO"), rs.getInt("NRECIBOS")));
             }
             return fPagos;
         } catch (SQLException ex) {
@@ -25,9 +31,11 @@ public class FPagoController {
         }
     }
     public FPago findById(FPago f){
-        try(PreparedStatement sel = con.prepareStatement("SELECT * FROM FPAGO WHERE CCODFPAGO = ?")){
-            sel.setString(1, f.getcCodFPago());
-            try (ResultSet rFPago = sel.executeQuery()) {
+        try {
+            sentencia = "SELECT * FROM FPAGO WHERE CCODFPAGO = ?";
+            ps = con.prepareStatement(sentencia);
+            ps.setString(1, f.getcCodFPago());
+            try (ResultSet rFPago = ps.executeQuery()) {
                 if(!rFPago.next()) return null;
                 return new FPago(f.getcCodFPago(), rFPago.getString("CDESFPAGO"), rFPago.getInt("NRECIBOS"));
             }
@@ -39,11 +47,13 @@ public class FPagoController {
     
     public int create(FPago f){
         if(f == null)return 0;
-        try (PreparedStatement insert = con.prepareStatement("INSERT INTO FPAGO(CCODFPAGO,CDESFPAGO,NRECIBOS) VALUES(?,?,?)");) {
-            insert.setString(1, f.getcCodFPago());
-            insert.setString(2, f.getcDesFPago());
-            insert.setInt(3, f.getnRecivos());
-            return insert.executeUpdate();
+        try  {
+            sentencia = "INSERT INTO FPAGO(CCODFPAGO,CDESFPAGO,NRECIBOS) VALUES(?,?,?)";
+            ps = con.prepareStatement(sentencia);
+            ps.setString(1, f.getcCodFPago());
+            ps.setString(2, f.getcDesFPago());
+            ps.setInt(3, f.getnRecivos());
+            return ps.executeUpdate();
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
             return 0;
@@ -52,11 +62,13 @@ public class FPagoController {
     
     public int update(FPago f){
         if(f == null)return 0;
-        try (PreparedStatement update = con.prepareStatement("UPDATE FPAGO SET CDESFPAGO = ?, NRECIBOS = ? WHERE CCODFPAGO LIKE ?");) {
-            update.setString(1, f.getcDesFPago());
-            update.setInt(2, f.getnRecivos());
-            update.setString(3, f.getcCodFPago());
-            return update.executeUpdate();
+        try {
+            sentencia = "UPDATE FPAGO SET CDESFPAGO = ?, NRECIBOS = ? WHERE CCODFPAGO LIKE ?";
+            ps = con.prepareStatement(sentencia);
+            ps.setString(1, f.getcDesFPago());
+            ps.setInt(2, f.getnRecivos());
+            ps.setString(3, f.getcCodFPago());
+            return ps.executeUpdate();
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
             return 0;
@@ -65,9 +77,11 @@ public class FPagoController {
     
     public int delete(FPago f){
         if(f == null)return 0;
-        try (PreparedStatement delete = con.prepareStatement("DELETE FROM FPAGO WHERE CCODFPAGO = ?");) {
-            delete.setString(1, f.getcCodFPago());
-            return delete.executeUpdate();
+        try {
+            sentencia = "DELETE FROM FPAGO WHERE CCODFPAGO = ?";
+            ps = con.prepareStatement(sentencia);
+            ps.setString(1, f.getcCodFPago());
+            return ps.executeUpdate();
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
             return 0;
