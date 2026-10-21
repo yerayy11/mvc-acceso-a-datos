@@ -1,16 +1,49 @@
 package tema02_ejercicio1.Views;
 
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import tema02_ejercicio1.Controllers.FPagoController;
 import tema02_ejercicio1.Controllers.Prestamosv3Controller;
 import tema02_ejercicio1.Models.FPago;
+import tema02_ejercicio1.Models.Prestamov3;
 
 public class PrestamoView extends javax.swing.JDialog {
     
     private final Prestamosv3Controller CONTR;
+    private Prestamosv3Controller pv3c;
+    private FPagoController fpc;
+    private Prestamov3 p;
+    //private Recibosv3Controller rv3c;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jToolBar1.setFloatable(false);
+        fpc= new FPagoController(Index.contr.getCon());
+        rellenarComboBox();
         this.CONTR = new Prestamosv3Controller(Index.contr.getCon());
+        actualizarTabla();
+        this.jtPrestamos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int fila= jtPrestamos.getSelectedRow();
+                if(fila != -1){
+                txtNPrestamo.setText(jtPrestamos.getValueAt(fila, 0).toString());
+                txtFechaPrestamo.setText(jtPrestamos.getValueAt(fila, 1).toString());
+                txtImpPrestamo.setText(jtPrestamos.getValueAt(fila, 2).toString());
+                txtImpRecibido.setText(jtPrestamos.getValueAt(fila, 3).toString());
+                jcFormasPago.setSelectedItem(jtPrestamos.getValueAt(fila, 4));
+                p=new Prestamov3();
+                p.setnNumPrest((int) jtPrestamos.getValueAt(fila, 0));
+                
+                }
+                
+            }
+        });
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -36,16 +69,16 @@ public class PrestamoView extends javax.swing.JDialog {
         txtImpRecibido = new javax.swing.JTextField();
         jcFormasPago = new javax.swing.JComboBox<>();
         bBuscar = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jToolBar1.setRollover(true);
 
         bAlta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/alta.png"))); // NOI18N
         bAlta.setToolTipText("Alta");
         bAlta.setFocusable(false);
         bAlta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bAlta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bAlta.addActionListener(this::bAltaActionPerformed);
         jToolBar1.add(bAlta);
 
         bBaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/delete.png"))); // NOI18N
@@ -53,6 +86,7 @@ public class PrestamoView extends javax.swing.JDialog {
         bBaja.setFocusable(false);
         bBaja.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bBaja.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bBaja.addActionListener(this::bBajaActionPerformed);
         jToolBar1.add(bBaja);
 
         bModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/modificar.png"))); // NOI18N
@@ -60,6 +94,7 @@ public class PrestamoView extends javax.swing.JDialog {
         bModificar.setFocusable(false);
         bModificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bModificar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bModificar.addActionListener(this::bModificarActionPerformed);
         jToolBar1.add(bModificar);
 
         jtPrestamos.setModel(new javax.swing.table.DefaultTableModel(
@@ -116,6 +151,10 @@ public class PrestamoView extends javax.swing.JDialog {
 
         bBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
         bBuscar.setToolTipText("Buscar");
+        bBuscar.addActionListener(this::bBuscarActionPerformed);
+
+        jButton1.setText("Pagar Recibo");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -130,34 +169,37 @@ public class PrestamoView extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(101, 101, 101)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtImpRecibido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtImpPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(44, 44, 44)
-                                .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtNPrestamo))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(33, 33, 33)
-                        .addComponent(bBuscar)))
-                .addContainerGap(47, Short.MAX_VALUE))
+                                .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                                .addComponent(txtImpPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtImpRecibido, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(bBuscar)
+                        .addGap(75, 75, 75))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,15 +211,11 @@ public class PrestamoView extends javax.swing.JDialog {
                         .addGap(37, 37, 37)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(37, 37, 37)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel1)
-                                    .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(bBuscar)))
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bBuscar))
                         .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
@@ -194,7 +232,9 @@ public class PrestamoView extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
                             .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(132, 132, 132)
+                        .addGap(88, 88, 88)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -202,12 +242,48 @@ public class PrestamoView extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void bBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBuscarActionPerformed
+        
+    }//GEN-LAST:event_bBuscarActionPerformed
+
+    private void bBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBajaActionPerformed
+        Prestamov3 prestamo = new Prestamov3();
+        if(jtPrestamos.getSelectedRow() == -1){
+        JOptionPane.showMessageDialog(null, "Selecciona un registro de la tabla");
+        return;    
+        }
+        prestamo.setnNumPrest((int) jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 0));
+        int eleccion=JOptionPane.showConfirmDialog(null, "¿Estas seguro de que quieres borrar este prestamo?");
+        if(eleccion!=JOptionPane.OK_OPTION){
+        JOptionPane.showMessageDialog(this, "Operación cancelada");
+        return;       
+        }
+        int borrado= pv3c.delete(prestamo);
+        if(borrado <=0){
+        JOptionPane.showMessageDialog(this, "No se ha podido eliminar el registro seleccionado");
+        }
+        
+    }//GEN-LAST:event_bBajaActionPerformed
+
+    private void bAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAltaActionPerformed
+        
+    }//GEN-LAST:event_bAltaActionPerformed
+
+    private void bModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bModificarActionPerformed
+        
+    }//GEN-LAST:event_bModificarActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bAlta;
     private javax.swing.JButton bBaja;
     private javax.swing.JButton bBuscar;
     private javax.swing.JButton bModificar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -224,4 +300,31 @@ public class PrestamoView extends javax.swing.JDialog {
     private javax.swing.JTextField txtImpRecibido;
     private javax.swing.JTextField txtNPrestamo;
     // End of variables declaration//GEN-END:variables
+
+    private void actualizarTabla() {
+    DefaultTableModel dtm= new DefaultTableModel();
+    dtm=(DefaultTableModel) this.jtPrestamos.getModel();
+    pv3c= new Prestamosv3Controller(Index.contr.getCon());
+    ArrayList<Prestamov3> lista= new ArrayList<>();
+    lista= pv3c.findAllEager();
+        for (Prestamov3 prestamo : lista) {
+            dtm.addRow(new Object[]{
+            prestamo.getnNumPrest(),
+            prestamo.getdFecPrest(),
+            prestamo.getnImpPrest(),
+            prestamo.getnImpReci(),
+            prestamo.getcCodFPago()    
+            });
+            
+        }
+    }
+
+    private void rellenarComboBox() {
+        ArrayList<FPago> lista= fpc.selectAll();
+        for (FPago fp : lista) {
+            jcFormasPago.addItem(fp);
+        }
+    }
+    
+    
 }
