@@ -34,15 +34,15 @@
               </Group>
               <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="tDescripcion" pref="131" max="32767" attributes="0"/>
+                  <Component id="tNRecivos" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="tCodigo" min="-2" pref="71" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="bBuscar" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="tDescripcion" max="32767" attributes="0"/>
-                  <Component id="tNRecivos" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="40" max="32767" attributes="0"/>
+              <EmptySpace pref="74" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
@@ -53,21 +53,23 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-              <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
+              <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace pref="50" max="32767" attributes="0"/>
+                      <EmptySpace pref="31" max="32767" attributes="0"/>
                       <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="138" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="tCodigo" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="bBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="118" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="tCodigo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="bBuscar" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -139,7 +141,10 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="bAlta">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Alta"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/iconos/alta.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Alta"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -150,7 +155,10 @@
         </Component>
         <Component class="javax.swing.JButton" name="bBaja">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Baja"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/iconos/delete.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Baja"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -161,7 +169,10 @@
         </Component>
         <Component class="javax.swing.JButton" name="bModificar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Modificar"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/iconos/modificar.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Modificar"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
@@ -193,7 +204,10 @@
     </Component>
     <Component class="javax.swing.JButton" name="bBuscar">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Buscar"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/iconos/buscar.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Buscar"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bBuscarActionPerformed"/>

@@ -41,19 +41,22 @@ public class PrestamoView extends javax.swing.JDialog {
 
         jToolBar1.setRollover(true);
 
-        bAlta.setText("Alta");
+        bAlta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/alta.png"))); // NOI18N
+        bAlta.setToolTipText("Alta");
         bAlta.setFocusable(false);
         bAlta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bAlta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(bAlta);
 
-        bBaja.setText("Baja");
+        bBaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/delete.png"))); // NOI18N
+        bBaja.setToolTipText("Baja");
         bBaja.setFocusable(false);
         bBaja.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bBaja.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(bBaja);
 
-        bModificar.setText("Modificar");
+        bModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/modificar.png"))); // NOI18N
+        bModificar.setToolTipText("Modificar");
         bModificar.setFocusable(false);
         bModificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bModificar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -111,7 +114,8 @@ public class PrestamoView extends javax.swing.JDialog {
 
         jcFormasPago.setModel(new javax.swing.DefaultComboBoxModel<>());
 
-        bBuscar.setText("Buscar");
+        bBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
+        bBuscar.setToolTipText("Buscar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -151,7 +155,7 @@ public class PrestamoView extends javax.swing.JDialog {
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(27, 27, 27)
+                        .addGap(33, 33, 33)
                         .addComponent(bBuscar)))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
@@ -159,16 +163,22 @@ public class PrestamoView extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bBuscar))
-                        .addGap(11, 11, 11)
+                        .addGap(37, 37, 37)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(37, 37, 37)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(bBuscar)))
+                        .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -185,8 +195,7 @@ public class PrestamoView extends javax.swing.JDialog {
                             .addComponent(jLabel5)
                             .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(132, 132, 132)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 

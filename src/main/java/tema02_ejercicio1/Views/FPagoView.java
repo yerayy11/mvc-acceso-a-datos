@@ -35,9 +35,6 @@ public class FPagoView extends javax.swing.JDialog {
             }
         });
         
-        bAlta.setIcon(new ImageIcon(getClass().getResource("/iconos/alta.png")));
-        bBaja.setIcon(new ImageIcon(getClass().getResource("/iconos/delete.png")));
-        bModificar.setIcon(new ImageIcon(getClass().getResource("/iconos/modificar.png")));
         
     }
 
@@ -84,21 +81,24 @@ public class FPagoView extends javax.swing.JDialog {
 
         jToolBar1.setRollover(true);
 
-        bAlta.setText("Alta");
+        bAlta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/alta.png"))); // NOI18N
+        bAlta.setToolTipText("Alta");
         bAlta.setFocusable(false);
         bAlta.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bAlta.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         bAlta.addActionListener(this::bAltaActionPerformed);
         jToolBar1.add(bAlta);
 
-        bBaja.setText("Baja");
+        bBaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/delete.png"))); // NOI18N
+        bBaja.setToolTipText("Baja");
         bBaja.setFocusable(false);
         bBaja.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bBaja.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         bBaja.addActionListener(this::bBajaActionPerformed);
         jToolBar1.add(bBaja);
 
-        bModificar.setText("Modificar");
+        bModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/modificar.png"))); // NOI18N
+        bModificar.setToolTipText("Modificar");
         bModificar.setFocusable(false);
         bModificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bModificar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -111,7 +111,8 @@ public class FPagoView extends javax.swing.JDialog {
 
         jLabel3.setText("N Recivos");
 
-        bBuscar.setText("Buscar");
+        bBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
+        bBuscar.setToolTipText("Buscar");
         bBuscar.addActionListener(this::bBuscarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -128,13 +129,13 @@ public class FPagoView extends javax.swing.JDialog {
                     .addComponent(jLabel3))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(tDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                    .addComponent(tNRecivos)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(bBuscar))
-                    .addComponent(tDescripcion)
-                    .addComponent(tNRecivos))
-                .addContainerGap(40, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bBuscar)))
+                .addContainerGap(74, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -142,19 +143,20 @@ public class FPagoView extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(69, 69, 69))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(138, 138, 138)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(tCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(118, 118, 118)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(tCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(bBuscar))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
