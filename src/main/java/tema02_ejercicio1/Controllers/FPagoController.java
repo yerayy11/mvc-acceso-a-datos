@@ -11,20 +11,7 @@ public class FPagoController {
         if(this.con == null) this.con = con;
     }
     
-    public ArrayList<FPago> selectAll(){
-        try (ResultSet datos = con.prepareStatement("SELECT * FROM FPAGO").executeQuery();) {
-            ArrayList<FPago> fPagos = new ArrayList<>();
-            while(datos.next()){
-                fPagos.add(new FPago(datos.getString("CCODFPAGO"), datos.getString("CDESFPAGO"), datos.getInt("NRECIBOS")));
-            }
-            return fPagos;
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-            return null;
-        }
-    }
-    
-    public FPago selectById(FPago f){
+    public FPago findById(FPago f){
         try(PreparedStatement sel = con.prepareStatement("SELECT * FROM FPAGO WHERE CCODFPAGO = ?")){
             sel.setString(1, f.getcCodFPago());
             try (ResultSet rFPago = sel.executeQuery()) {
@@ -73,5 +60,68 @@ public class FPagoController {
             return 0;
         }
     }
+    
+    public ArrayList<FPago> findAllLazy(){
+        String sql = "SELECT * FROM FPAGO ORDER BY CCODFPAGO";
+        try (ResultSet datos = con.prepareStatement(sql).executeQuery();) {
+            ArrayList<FPago> fPagos = new ArrayList<>();
+            while(datos.next()){
+                fPagos.add(new FPago(
+                    datos.getString("CCODFPAGO"), 
+                    datos.getString("CDESFPAGO"), 
+                    datos.getInt("NRECIBOS"))
+                );
+            }
+            return fPagos;
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return null;
+        }
+    }
+    
+    public ArrayList<FPago> findAllEagerWithJoin() {
+    String sql = "SELECT f.* " +
+                 "FROM FPAGO f " +
+                 "LEFT JOIN PRESTAMOS p ON f.CCODFPAGO = p.CCODFPAGO " +
+                 "ORDER BY f.CCODFPAGO";
+
+    ArrayList<FPago> fPagos = new ArrayList<>();
+    FPago actual = null;
+
+    try (PreparedStatement stmt = con.prepareStatement(sql);
+         ResultSet datos = stmt.executeQuery()) {
+
+        while (datos.next()) {
+            String codFPago = datos.getString("CCODFPAGO");
+
+            // Si cambiamos de forma de pago, creamos la nueva instancia
+            if (actual == null || !actual.getcCodFPago().equals(codFPago)) {
+                actual = new FPago(
+                    codFPago,
+                    datos.getString("CDESFPAGO"),
+                    datos.getInt("NRECIBOS")
+                );
+                actual.setPrestamos(new ArrayList<>());
+                fPagos.add(actual);
+            }
+
+            // Si la fila del JOIN trae un préstamo asociado, lo añadimos
+            int numPrest = datos.getInt("NNUMPREST");
+            if (!datos.wasNull()) {
+                Prestamo p = new Prestamo();
+                p.setnNumPrest(numPrest);
+                p.setdFecPrest(datos.getDate("DFECPREST"));
+                p.setnImpPrest(datos.getBigDecimal("NIMPPREST"));
+                
+                actual.getPrestamos().add(p);
+            }
+        }
+        return fPagos;
+
+    } catch (SQLException ex) {
+        System.err.println("Error en findAllEagerWithJoin: " + ex.getMessage());
+        return null;
+    }
+}
     
 }
