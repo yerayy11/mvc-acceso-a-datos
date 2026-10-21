@@ -9,6 +9,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Controllers.FPagoController;
+import javax.swing.ImageIcon;
+
 
 public class FPagoView extends javax.swing.JDialog {
     
@@ -32,6 +34,10 @@ public class FPagoView extends javax.swing.JDialog {
                 tNRecivos.setText(jTable1.getValueAt(indice[0], 2).toString());
             }
         });
+        
+        bAlta.setIcon(new ImageIcon(getClass().getResource("/iconos/alta.png")));
+        bBaja.setIcon(new ImageIcon(getClass().getResource("/iconos/delete.png")));
+        bModificar.setIcon(new ImageIcon(getClass().getResource("/iconos/modificar.png")));
         
     }
 
