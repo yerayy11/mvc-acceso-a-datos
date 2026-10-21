@@ -31,3 +31,27 @@ public int generarRecibos(int numPrestamo) {
 
     return recibosGenerados;
 }
+
+//Metodo para calcular la deuda de los prestamos. Usa la funcion fn_calcular_deuda_prestamo que recibe el numero de prestamo.
+
+public double calcularDeudaPrestamo(int numPrestamo) {
+
+    double deuda = 0;
+
+    try (CallableStatement cs = con.prepareCall("{? = CALL fn_calcular_deuda_prestamo(?)}")) {
+
+        cs.registerOutParameter(1, Types.DECIMAL);
+
+        //Parametro de entrada
+        cs.setInt(2, numPrestamo); 
+
+        cs.execute();
+
+        deuda = cs.getDouble(1);
+
+    } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+    }
+    return deuda;
+}
+    
