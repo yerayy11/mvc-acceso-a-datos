@@ -15,3 +15,20 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# NetBeans (configuracion privada de cada equipo)
+nbproject/private/
+build/
+dist/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# Otros IDE
+.idea/
+*.iml
+.vscode/
+
+# Compilados y logs
+*.class
+*.log
