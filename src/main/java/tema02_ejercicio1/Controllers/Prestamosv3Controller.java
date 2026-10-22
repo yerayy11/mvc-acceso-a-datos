@@ -7,9 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Models.Prestamov3;
+import tema02_ejercicio1.Models.Recibov1;
 
 public class Prestamosv3Controller {
 
@@ -19,8 +21,14 @@ public class Prestamosv3Controller {
     private int fila;
     private ArrayList<Prestamov3> lista;
     private Prestamov3 prestamo; 
+    private Recibosv3Controller rc;
+    private FPagoController fpc;
+    
+    
     public Prestamosv3Controller(Connection con) {
-        if(this.con == null) this.con = con;    
+        if(this.con == null) this.con = con;
+        rc = new Recibosv3Controller(con);
+        fpc = new FPagoController(con);
     }
       //findAllLazy buscar prestamos sin atributos de tipo collecion (arraylist, list)
             public ArrayList<Prestamov3> findAllLazy() {
@@ -41,8 +49,7 @@ public class Prestamosv3Controller {
                     prestamo.setnImpPrest(rs.getInt(3));
                     prestamo.setnImpReci(rs.getInt(4));
 
-                    FPago fpago = new FPago();
-                    fpago.setcCodFPago(rs.getString(5));
+                    FPago fpago = fpc.findById(new FPago(rs.getString(5),null,0));
 
                     prestamo.setcCodFPago(fpago);
 
@@ -65,7 +72,7 @@ public class Prestamosv3Controller {
             ///
     public ArrayList<Prestamov3> findAllEager(){
         
-        lista = new ArrayList<Prestamov3>();
+        lista = new ArrayList<>();
         
         sentencia = "SELECT * FROM PRESTAMOS";
         
@@ -81,12 +88,14 @@ public class Prestamosv3Controller {
                     prestamo.setnImpPrest(rs.getInt(3));
                     prestamo.setnImpReci(rs.getInt(4));
 
-                    FPago fpago = new FPago();
-                    fpago.setcCodFPago(rs.getString(5));
+                    FPago fpago = fpc.findById(new FPago(rs.getString(5),null,0));
 
                     prestamo.setcCodFPago(fpago);
                     
-                    //FALTA AÑADIR EL ATRIBUTO ARRAYLIST DE RECIBOS (ATRIBUTO DE PRESTAMOSV3)
+                    ArrayList<Recibov1> recibos = rc.findByPrestamoId(new Prestamov3(prestamo.getnNumPrest(), null, 0,0, null, null));
+                    
+                    prestamo.setListaRecibos(recibos);
+                    
                     lista.add(prestamo);
                 }
 
@@ -188,6 +197,11 @@ public int delete(Prestamov3 prestamo) {
         System.out.println("el prestamo tiene una deuda que todavía le falta por pagar o que tiene recibos pagados");
         return 0;
     }
+    
+    int recibosBorrados = rc.deleteByPrestamoId(prestamo);
+    
+    if(recibosBorrados < 0) return 0;
+    
     sentencia = "DELETE FROM PRESTAMOS WHERE nNumPrest = ?";
 
     try (PreparedStatement ps = con.prepareStatement(sentencia)) {
@@ -211,20 +225,17 @@ public int delete(Prestamov3 prestamo) {
 
         try {
 
-            CallableStatement cs =
-                    con.prepareCall("{CALL sp_GENERARRECIBOS(?, ?)}");
-
-            // Parámetro de entrada
-            cs.setInt(1, numPrestamo);
-
-            // Parámetro de salida
-            cs.registerOutParameter(2, Types.INTEGER);
-
-            cs.execute();
-
-            recibosGenerados = cs.getInt(2);
-
-            cs.close();
+            try (CallableStatement cs = con.prepareCall("{CALL sp_GENERARRECIBOS(?, ?)}")) {
+                // Parámetro de entrada
+                cs.setInt(1, numPrestamo);
+                
+                // Parámetro de salida
+                cs.registerOutParameter(2, Types.INTEGER);
+                
+                cs.execute();
+                
+                recibosGenerados = cs.getInt(2);
+            }
 
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

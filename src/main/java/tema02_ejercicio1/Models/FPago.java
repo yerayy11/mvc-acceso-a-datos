@@ -45,7 +45,7 @@ public class FPago {
 
     @Override
     public String toString() {
-        return cDesFPago;
+        return cCodFPago+" " +cDesFPago;
     }
 
     @Override
