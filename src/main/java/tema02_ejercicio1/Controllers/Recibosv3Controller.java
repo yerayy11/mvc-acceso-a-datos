@@ -47,7 +47,7 @@ public class Recibosv3Controller {
         return recibosGenerados;
     }
 
-    public ArrayList<Recibov1> findAllById(Prestamov3 prestamo){
+    public ArrayList<Recibov1> findByPrestamoId(Prestamov3 prestamo){
         ArrayList<Recibov1> lista = new ArrayList<>();
         
         String sql = "SELECT * FROM RECIBOS WHERE NNUMPREST = ?";
@@ -66,7 +66,7 @@ public class Recibosv3Controller {
                     lista.add(new Recibov1(rs.getInt("NNUMPREST"),
                                            rs.getInt("NNUMRECIB"), 
                                            rs.getDate("DFECREC").toLocalDate(), 
-                                           rs.getInt("NIMPRERC"),
+                                           rs.getInt("NIMPREC"),
                                            rs.getDate("DFECPAGO").toLocalDate()));
                     
                 }                
@@ -78,6 +78,46 @@ public class Recibosv3Controller {
         }
         
         return lista;
+    }
+    
+    public int pagarRecibo(Recibov1 recibo){
+        int recibosPagados = -1;
+        
+        String sql = "UPDATE RECIBOS SET DFECPAGO = CURDATE() WHERE NNUMRECIB = ?";
+        
+        try(PreparedStatement ps = con.prepareStatement(sql)){
+            
+            //Añadimos el campo id del recibo correspondiente
+            ps.setInt(1, recibo.getnNumRecib());
+            
+            //recogemos el número de filas afectadas
+            recibosPagados = ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            System.err.println("Error al pagar el recibo: " + ex.getMessage());
+        }
+        
+        return recibosPagados;
+    }
+    
+    public int deleteByPrestamoId(Prestamov3 prestamo){
+        int filasBorradas = -1;
+        
+        String sql = "DELETE FROM RECIBOS WHERE NNUMPREST = ?";
+        
+        try(PreparedStatement ps = con.prepareStatement(sql)){
+            
+            //Añadimos el campo id del recibo correspondiente
+            ps.setInt(1, prestamo.getnNumPrest());
+            
+            //recogemos el número de filas afectadas
+            filasBorradas = ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            System.err.println("Error al borrar los recibos: " + ex.getMessage());
+        }
+        
+        return filasBorradas;
     }
     
 }
