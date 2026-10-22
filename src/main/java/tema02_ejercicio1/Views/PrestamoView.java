@@ -15,9 +15,8 @@ import tema02_ejercicio1.Models.Recibov1;
 
 public class PrestamoView extends javax.swing.JDialog {
     
-    private final Prestamosv3Controller CONTR;
     private Prestamosv3Controller pv3c;
-    private FPagoController fpc;
+    private final FPagoController fpc;
     private Prestamov3 p;
     private DefaultTableModel dtm;
     private FPago fp;
@@ -31,7 +30,6 @@ public class PrestamoView extends javax.swing.JDialog {
         fpc= new FPagoController(Index.contr.getCon());
         rellenarComboBox();
         rv3c= new Recibosv3Controller(Index.contr.getCon());
-        this.CONTR = new Prestamosv3Controller(Index.contr.getCon());
         actualizarTabla();
         this.jtPrestamos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override

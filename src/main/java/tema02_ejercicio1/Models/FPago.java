@@ -5,7 +5,7 @@ import java.util.Objects;
 public class FPago {
     private String cCodFPago;
     private String cDesFPago;
-    private int nRecivos;
+    private int nRecibos;
 
     public String getcCodFPago() {
         return cCodFPago;
@@ -23,12 +23,12 @@ public class FPago {
         this.cDesFPago = cDesFPago;
     }
 
-    public int getnRecivos() {
-        return nRecivos;
+    public int getnRecibos() {
+        return nRecibos;
     }
 
-    public void setnRecivos(int nRecivos) {
-        this.nRecivos = nRecivos;
+    public void setnRecibos(int nRecibos) {
+        this.nRecibos = nRecibos;
     }
 
     public FPago() {
@@ -38,7 +38,7 @@ public class FPago {
     public FPago(String cCodFPago, String cDesFPago, int nRecivos) {
         this.cCodFPago = cCodFPago;
         this.cDesFPago = cDesFPago;
-        this.nRecivos = nRecivos;
+        this.nRecibos = nRecivos;
     }
     
     
@@ -53,7 +53,7 @@ public class FPago {
         int hash = 7;
         hash = 47 * hash + Objects.hashCode(this.cCodFPago);
         hash = 47 * hash + Objects.hashCode(this.cDesFPago);
-        hash = 47 * hash + this.nRecivos;
+        hash = 47 * hash + this.nRecibos;
         return hash;
     }
 

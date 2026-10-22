@@ -6,17 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import tema02_ejercicio1.Models.*;
 
 public class Recibosv3Controller {
     
     private Connection con;
-    private String sentencia;
-    private PreparedStatement ps;
-    private ResultSet rs;
-    private int fila;
     
     public Recibosv3Controller(Connection con) {
         if(this.con == null) this.con = con;    

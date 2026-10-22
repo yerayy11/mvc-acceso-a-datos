@@ -207,7 +207,7 @@ public class Index extends javax.swing.JFrame {
 
     private void rellenarJComboBox() {
         this.jcRoles.removeAllItems();
-        ArrayList<String> roles = new ArrayList<String>();
+        ArrayList<String> roles = new ArrayList<>();
         roles.add("Todos");
         roles.add("Jefazo");
         roles.add("Informáticos");

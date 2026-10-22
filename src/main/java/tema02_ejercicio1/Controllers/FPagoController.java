@@ -53,7 +53,7 @@ public class FPagoController {
         try (PreparedStatement ps = con.prepareStatement(sentencia)) {
             ps.setString(1, f.getcCodFPago());
             ps.setString(2, f.getcDesFPago());
-            ps.setInt(3, f.getnRecivos());
+            ps.setInt(3, f.getnRecibos());
             return ps.executeUpdate();
 
         } catch (SQLException ex) {
@@ -68,7 +68,7 @@ public class FPagoController {
 
         try (PreparedStatement ps = con.prepareStatement(sentencia)) {
             ps.setString(1, f.getcDesFPago());
-            ps.setInt(2, f.getnRecivos());
+            ps.setInt(2, f.getnRecibos());
             ps.setString(3, f.getcCodFPago());
             return ps.executeUpdate();
 

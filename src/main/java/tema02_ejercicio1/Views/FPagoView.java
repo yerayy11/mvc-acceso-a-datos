@@ -9,7 +9,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Controllers.FPagoController;
-import javax.swing.ImageIcon;
 
 
 public class FPagoView extends javax.swing.JDialog {
@@ -220,7 +219,7 @@ public class FPagoView extends javax.swing.JDialog {
             return;
         }
         tDescripcion.setText(encontrado.getcDesFPago());
-        tNRecivos.setText(String.valueOf(encontrado.getnRecivos()));
+        tNRecivos.setText(String.valueOf(encontrado.getnRecibos()));
         JOptionPane.showMessageDialog(this, "Encontrado");
     }//GEN-LAST:event_bBuscarActionPerformed
 
@@ -269,7 +268,7 @@ public class FPagoView extends javax.swing.JDialog {
             return;
         }
         for (FPago fp : fPagos) {
-            dtm.addRow(new Object[]{fp.getcCodFPago(),fp.getcDesFPago(),fp.getnRecivos()});
+            dtm.addRow(new Object[]{fp.getcCodFPago(),fp.getcDesFPago(),fp.getnRecibos()});
         }
     }
 }

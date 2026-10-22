@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Models.Prestamov3;
@@ -18,17 +17,16 @@ public class Prestamosv3Controller {
     private Connection con;
     private String sentencia;
  
-    private int fila;
     private ArrayList<Prestamov3> lista;
     private Prestamov3 prestamo; 
-    private Recibosv3Controller rc;
-    private FPagoController fpc;
+    private final Recibosv3Controller RC;
+    private final FPagoController FPC;
     
     
     public Prestamosv3Controller(Connection con) {
         if(this.con == null) this.con = con;
-        rc = new Recibosv3Controller(con);
-        fpc = new FPagoController(con);
+        RC = new Recibosv3Controller(con);
+        FPC = new FPagoController(con);
     }
       //findAllLazy buscar prestamos sin atributos de tipo collecion (arraylist, list)
             public ArrayList<Prestamov3> findAllLazy() {
@@ -49,7 +47,7 @@ public class Prestamosv3Controller {
                     prestamo.setnImpPrest(rs.getInt(3));
                     prestamo.setnImpReci(rs.getInt(4));
 
-                    FPago fpago = fpc.findById(new FPago(rs.getString(5),null,0));
+                    FPago fpago = FPC.findById(new FPago(rs.getString(5),null,0));
 
                     prestamo.setcCodFPago(fpago);
 
@@ -62,14 +60,9 @@ public class Prestamosv3Controller {
 
             return lista;
         }
-        //findAllEager busca con todo incluyendo atributos tipo collection
             
-            ///
-            ///A TERMINAR
-            ///
-            ///
-            ///
-            ///
+        //findAllEager busca con todo incluyendo atributos tipo collection
+         
     public ArrayList<Prestamov3> findAllEager(){
         
         lista = new ArrayList<>();
@@ -88,11 +81,11 @@ public class Prestamosv3Controller {
                     prestamo.setnImpPrest(rs.getInt(3));
                     prestamo.setnImpReci(rs.getInt(4));
 
-                    FPago fpago = fpc.findById(new FPago(rs.getString(5),null,0));
+                    FPago fpago = FPC.findById(new FPago(rs.getString(5),null,0));
 
                     prestamo.setcCodFPago(fpago);
                     
-                    ArrayList<Recibov1> recibos = rc.findByPrestamoId(new Prestamov3(prestamo.getnNumPrest(), null, 0,0, null, null));
+                    ArrayList<Recibov1> recibos = RC.findByPrestamoId(new Prestamov3(prestamo.getnNumPrest(), null, 0,0, null, null));
                     
                     prestamo.setListaRecibos(recibos);
                     
@@ -198,7 +191,7 @@ public int delete(Prestamov3 prestamo) {
         return 0;
     }
     
-    int recibosBorrados = rc.deleteByPrestamoId(prestamo);
+    int recibosBorrados = RC.deleteByPrestamoId(prestamo);
     
     if(recibosBorrados < 0) return 0;
     
