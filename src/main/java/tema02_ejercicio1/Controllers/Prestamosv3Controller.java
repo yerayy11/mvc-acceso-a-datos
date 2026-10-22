@@ -136,88 +136,88 @@ public Prestamov3 findById(Prestamov3 pId) {
 
     public int create(Prestamov3 prestamo) {
 
-    int filasInsertadas = 0;
-        
-    sentencia = "INSERT INTO PRESTAMOS VALUES (?,?,?,?,?)";
-    
-    try (PreparedStatement ps = con.prepareStatement(sentencia)) {
+        int filasInsertadas = 0;
 
-        ps.setInt(1, prestamo.getnNumPrest());
-        ps.setDate(2, Date.valueOf(prestamo.getdFecPrest()));
-        ps.setInt(3, prestamo.getnImpPrest());
-        ps.setInt(4, prestamo.getnImpReci());
-        ps.setString(5, prestamo.getcCodFPago().getcCodFPago());
+        sentencia = "INSERT INTO PRESTAMOS VALUES (?,?,?,?,?)";
 
-        filasInsertadas = ps.executeUpdate();
-        
-        RC.generarRecibos(prestamo);
+        try (PreparedStatement ps = con.prepareStatement(sentencia)) {
 
-    } catch (SQLException ex) {
-        System.err.println(ex.getMessage());
+            ps.setInt(1, prestamo.getnNumPrest());
+            ps.setDate(2, Date.valueOf(prestamo.getdFecPrest()));
+            ps.setInt(3, prestamo.getnImpPrest());
+            ps.setInt(4, prestamo.getnImpReci());
+            ps.setString(5, prestamo.getcCodFPago().getcCodFPago());
+
+            filasInsertadas = ps.executeUpdate();
+
+            RC.generarRecibos(prestamo);
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        return filasInsertadas;
     }
-
-    return filasInsertadas;
-}
     
     public int update(Prestamov3 prestamo) {
         
-    double pagado = calcularDeudaPrestamo(prestamo.getnNumPrest());
-    
-    if(pagado<prestamo.getnImpPrest()){
-        System.out.println("el prestamo tiene una deuda que todavía le falta por pagar o que tiene recibos pagados");
+        int filasActualizadas = 0;
+        
+        if(tienePrestamosPagados(prestamo))return 0;
+
+        sentencia = """
+                    UPDATE PRESTAMOS
+                    SET dFecPrest = ?,
+                        nImpPrest = ?,
+                        nImpReci = ?,
+                        cCodFPago = ?
+                    WHERE nNumPrest = ?
+                    """;
+
+        try (PreparedStatement ps = con.prepareStatement(sentencia)) {
+
+            ps.setDate(1, Date.valueOf(prestamo.getdFecPrest()));
+            ps.setInt(2, prestamo.getnImpPrest());
+            ps.setInt(3, prestamo.getnImpReci());
+            ps.setString(4, prestamo.getcCodFPago().getcCodFPago());
+            ps.setInt(5, prestamo.getnNumPrest());
+
+            filasActualizadas = ps.executeUpdate();
+            
+            RC.deleteByPrestamoId(prestamo);
+
+            RC.generarRecibos(prestamo);
+            
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        return filasActualizadas;
+    }
+    public int delete(Prestamov3 prestamo) {
+
+
+
+        if(tienePrestamosPagados(prestamo))return 0;
+
+        int recibosBorrados = RC.deleteByPrestamoId(prestamo);
+
+        if(recibosBorrados < 0) return 0;
+
+        sentencia = "DELETE FROM PRESTAMOS WHERE nNumPrest = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sentencia)) {
+
+            ps.setInt(1, prestamo.getnNumPrest());
+
+            return ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
         return 0;
     }
-
-    sentencia = """
-                UPDATE PRESTAMOS
-                SET dFecPrest = ?,
-                    nImpPrest = ?,
-                    nImpReci = ?,
-                    cCodFPago = ?
-                WHERE nNumPrest = ?
-                """;
-
-    try (PreparedStatement ps = con.prepareStatement(sentencia)) {
-
-        ps.setDate(1, Date.valueOf(prestamo.getdFecPrest()));
-        ps.setInt(2, prestamo.getnImpPrest());
-        ps.setInt(3, prestamo.getnImpReci());
-        ps.setString(4, prestamo.getcCodFPago().getcCodFPago());
-        ps.setInt(5, prestamo.getnNumPrest());
-
-        return ps.executeUpdate();
-
-    } catch (SQLException ex) {
-        System.err.println(ex.getMessage());
-    }
-
-    return 0;
-}
-public int delete(Prestamov3 prestamo) {
-
- 
-    
-    if(tienePrestamosPagados(prestamo)){
-        return 0;
-    }
-    int recibosBorrados = RC.deleteByPrestamoId(prestamo);
-    
-    if(recibosBorrados < 0) return 0;
-    
-    sentencia = "DELETE FROM PRESTAMOS WHERE nNumPrest = ?";
-
-    try (PreparedStatement ps = con.prepareStatement(sentencia)) {
-
-        ps.setInt(1, prestamo.getnNumPrest());
-
-        return ps.executeUpdate();
-
-    } catch (SQLException ex) {
-        System.err.println(ex.getMessage());
-    }
-
-    return 0;
-}
 
     //Metodo para calcular la deuda de los prestamos. Usa la funcion fn_calcular_deuda_prestamo que recibe el numero de prestamo.
 
@@ -271,9 +271,9 @@ public int actualizarImporteRecibido(Prestamov3 prestamo){
     private boolean tienePrestamosPagados(Prestamov3 prestamo) {
         
         
-        String sentencia = "SELECT * FROM PRESTAMOS WHERE nNumPrest = ? AND nImpReci>0";
+        String sql = "SELECT * FROM PRESTAMOS WHERE nNumPrest = ? AND nImpReci>0";
         
-        try(PreparedStatement ps = con.prepareStatement(sentencia)){
+        try(PreparedStatement ps = con.prepareStatement(sql)){
             
             ps.setInt(1, prestamo.getnNumPrest());
             
