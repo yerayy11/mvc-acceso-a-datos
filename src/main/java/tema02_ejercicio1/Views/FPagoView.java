@@ -20,6 +20,7 @@ public class FPagoView extends javax.swing.JDialog {
     public FPagoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();        
+        jToolBar1.setFloatable(false);
         this.CONTR = new FPagoController(Index.contr.getCon());
         LSM = jTable1.getSelectionModel();
         rellenarTabla();

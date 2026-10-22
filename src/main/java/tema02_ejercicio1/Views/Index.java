@@ -13,6 +13,7 @@ public class Index extends javax.swing.JFrame {
             return;
         }
         initComponents();
+        jToolBar1.setFloatable(false);
     }
 
     @SuppressWarnings("unchecked")

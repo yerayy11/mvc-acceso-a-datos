@@ -45,7 +45,7 @@ public class FPago {
 
     @Override
     public String toString() {
-        return "FPago{" + "cCodFPago=" + cCodFPago + ", cDesFPago=" + cDesFPago + ", nRecivos=" + nRecivos + '}';
+        return cDesFPago;
     }
 
     @Override
