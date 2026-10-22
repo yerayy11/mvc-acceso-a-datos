@@ -16,20 +16,20 @@ import tema02_ejercicio1.Models.Recibov1;
 public class PrestamoView extends javax.swing.JDialog {
     
     private Prestamosv3Controller pv3c;
-    private final FPagoController fpc;
+    private final FPagoController FPC;
     private Prestamov3 p;
     private DefaultTableModel dtm;
     private FPago fp;
-    private Recibosv3Controller rv3c;
+    private final Recibosv3Controller RV3C;
     private Recibov1 r;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         jToolBar1.setFloatable(false);
-        fpc= new FPagoController(Index.contr.getCon());
+        FPC= new FPagoController(Index.contr.getCon());
         rellenarComboBox();
-        rv3c= new Recibosv3Controller(Index.contr.getCon());
+        RV3C= new Recibosv3Controller(Index.contr.getCon());
         actualizarTabla();
         this.jtPrestamos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -325,7 +325,6 @@ public class PrestamoView extends javax.swing.JDialog {
         
         if(hecho <=0){
         JOptionPane.showMessageDialog(this, "Registro no se ha podido añadir, comprueba sus campos");
-        return;   
         }else{
         JOptionPane.showMessageDialog(this, "Registro añadido");
         actualizarTabla();
@@ -353,7 +352,6 @@ public class PrestamoView extends javax.swing.JDialog {
         int hecho= pv3c.update(p);
         if(hecho <=0){
         JOptionPane.showMessageDialog(this, "No se ha podido modificar el prestamo seleccionado");
-        return;   
         }else{
         JOptionPane.showMessageDialog(this, "Registro modificado");
         actualizarTabla();
@@ -369,7 +367,7 @@ public class PrestamoView extends javax.swing.JDialog {
        }
        int numRecibo= Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 1).toString());
        r.setnNumRecib(numRecibo);
-       /*int pagado= rv3c.pagarRecibos(r);
+       /*int pagado= RV3C.pagarRecibos(r);
        if(pagado <=0){
        JOptionPane.showMessageDialog(this, "No se ha podido pagar el recibo");
        return; 
@@ -431,16 +429,16 @@ public class PrestamoView extends javax.swing.JDialog {
     }
 
     private void rellenarComboBox() {
-        ArrayList<FPago> lista= fpc.findAll();
-        for (FPago fp : lista) {
-            jcFormasPago.addItem(fp);
+        ArrayList<FPago> lista= FPC.findAll();
+        for (FPago fpago : lista) {
+            jcFormasPago.addItem(fpago);
         }
     }
     
     private void actualizarTablaRecibos() {
     p=new Prestamov3();
     p.setnNumPrest((int) jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 0));
-    ArrayList<Recibov1> lista= rv3c.findByPrestamoId(p);
+    ArrayList<Recibov1> lista= RV3C.findByPrestamoId(p);
     dtm= new DefaultTableModel();
     dtm=(DefaultTableModel) this.jtRecibos.getModel();
     dtm.setRowCount(0);
