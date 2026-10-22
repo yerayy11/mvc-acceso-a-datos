@@ -6,15 +6,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import tema02_ejercicio1.Models.*;
 
 public class Recibosv3Controller {
     
     private Connection con;
+    private final Prestamosv3Controller PV3C;
     
     public Recibosv3Controller(Connection con) {
         if(this.con == null) this.con = con;    
+        this.PV3C = new Prestamosv3Controller(con);
     }
     
     public int generarRecibos(Prestamov3 prestamo) {
@@ -57,12 +60,19 @@ public class Recibosv3Controller {
                 //Recorremos el resultado de la consulta
                 while(rs.next()){
                     
+                    LocalDate fechaPago;
+                    if(rs.getDate("DFECPAGO") == null){
+                        fechaPago = null;
+                    }else{
+                        fechaPago = rs.getDate("DFECPAGO").toLocalDate();
+                    }
+                    
                     //Añadimos cada Revibo a la lista
                     lista.add(new Recibov1(rs.getInt("NNUMPREST"),
                                            rs.getInt("NNUMRECIB"), 
                                            rs.getDate("DFECREC").toLocalDate(), 
                                            rs.getInt("NIMPREC"),
-                                           rs.getDate("DFECPAGO").toLocalDate()));
+                                           fechaPago));
                     
                 }                
                 
@@ -78,15 +88,19 @@ public class Recibosv3Controller {
     public int pagarRecibo(Recibov1 recibo){
         int recibosPagados = -1;
         
-        String sql = "UPDATE RECIBOS SET DFECPAGO = CURDATE() WHERE NNUMRECIB = ?";
+        String sql = "UPDATE RECIBOS SET DFECPAGO = CURDATE() WHERE NNUMRECIB = ? AND NNUMPREST = ? AND DFECPAGO IS NULL";
         
         try(PreparedStatement ps = con.prepareStatement(sql)){
             
             //Añadimos el campo id del recibo correspondiente
             ps.setInt(1, recibo.getnNumRecib());
             
+            ps.setInt(2, recibo.getnNumPrest());
+            
             //recogemos el número de filas afectadas
             recibosPagados = ps.executeUpdate();
+            
+            PV3C.actualizarImporteRecibido(new Prestamov3(recibo.getnNumPrest(), null, 0, 0,null,null));
             
         } catch (SQLException ex) {
             System.err.println("Error al pagar el recibo: " + ex.getMessage());

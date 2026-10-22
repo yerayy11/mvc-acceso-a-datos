@@ -136,8 +136,10 @@ public Prestamov3 findById(Prestamov3 pId) {
 
     public int create(Prestamov3 prestamo) {
 
+    int filasInsertadas = 0;
+        
     sentencia = "INSERT INTO PRESTAMOS VALUES (?,?,?,?,?)";
-
+    
     try (PreparedStatement ps = con.prepareStatement(sentencia)) {
 
         ps.setInt(1, prestamo.getnNumPrest());
@@ -146,16 +148,25 @@ public Prestamov3 findById(Prestamov3 pId) {
         ps.setInt(4, prestamo.getnImpReci());
         ps.setString(5, prestamo.getcCodFPago().getcCodFPago());
 
-        return ps.executeUpdate();
+        filasInsertadas = ps.executeUpdate();
+        
+        RC.generarRecibos(prestamo);
 
     } catch (SQLException ex) {
         System.err.println(ex.getMessage());
     }
 
-    return 0;
+    return filasInsertadas;
 }
     
     public int update(Prestamov3 prestamo) {
+        
+    double pagado = calcularDeudaPrestamo(prestamo.getnNumPrest());
+    
+    if(pagado<prestamo.getnImpPrest()){
+        System.out.println("el prestamo tiene una deuda que todavía le falta por pagar o que tiene recibos pagados");
+        return 0;
+    }
 
     sentencia = """
                 UPDATE PRESTAMOS
@@ -209,34 +220,6 @@ public int delete(Prestamov3 prestamo) {
 
     return 0;
 }
-    
-    //metodo para obtener los recibos generados. Usa procedimiento propio de la base de datos llamado sp_GENEREARRECIBOS el cual tiene dos parámetros: uno de entrada y otro de salida
-
-    public int generarRecibos(int numPrestamo) {
-
-        int recibosGenerados = -1;
-
-        try {
-
-            try (CallableStatement cs = con.prepareCall("{CALL sp_GENERARRECIBOS(?, ?)}")) {
-                // Parámetro de entrada
-                cs.setInt(1, numPrestamo);
-                
-                // Parámetro de salida
-                cs.registerOutParameter(2, Types.INTEGER);
-                
-                cs.execute();
-                
-                recibosGenerados = cs.getInt(2);
-            }
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return recibosGenerados;
-
-    }
 
     //Metodo para calcular la deuda de los prestamos. Usa la funcion fn_calcular_deuda_prestamo que recibe el numero de prestamo.
 
@@ -259,6 +242,28 @@ public int delete(Prestamov3 prestamo) {
             System.out.println(ex.getMessage());
         }
             return deuda;
-        }
-
     }
+    
+    public int actualizarImporteRecibido(Prestamov3 prestamo){
+        int filasActualizadas = 0;
+        
+        double deuda = calcularDeudaPrestamo(prestamo.getnNumPrest());
+        
+        if(deuda<=0) return filasActualizadas;
+        
+        String sql = "UPDATE RECIBOS SET NIMPRECI = TRUNCATE(NIMPPREST - ?,0) WHERE NNUMPREST = ?";
+        
+        try(PreparedStatement ps = con.prepareStatement(sql)){
+            
+            ps.setDouble(1, deuda);
+            
+            ps.setInt(2, prestamo.getnNumPrest());
+            
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+        return filasActualizadas;
+    }
+
+}

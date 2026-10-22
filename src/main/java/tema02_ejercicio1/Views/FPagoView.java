@@ -197,7 +197,8 @@ public class FPagoView extends javax.swing.JDialog {
         if(!isSeleccionado())return;
         if(JOptionPane.showConfirmDialog(this, "Borrar la Forma de Pago seleccionada?") != JOptionPane.OK_OPTION)return;
         if(CONTR.delete(new FPago(jTable1.getValueAt(LSM.getSelectedIndices()[0], 0).toString(), null, 0)) == 0){
-                JOptionPane.showMessageDialog(this, "Error al borrar la Forma de Pago");            
+                JOptionPane.showMessageDialog(this, "Error al borrar la Forma de Pago");   
+                return;
         }
         rellenarTabla();
         JOptionPane.showMessageDialog(this, "Borrado");

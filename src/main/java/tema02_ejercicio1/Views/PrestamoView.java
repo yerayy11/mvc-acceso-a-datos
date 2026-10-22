@@ -366,13 +366,17 @@ public class PrestamoView extends javax.swing.JDialog {
        return;
        }
        int numRecibo= Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 1).toString());
+       int numPrestamo = Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 2).toString());
        r.setnNumRecib(numRecibo);
-       /*int pagado= RV3C.pagarRecibos(r);
+       r.setnNumPrest(numPrestamo);
+       int pagado= RV3C.pagarRecibo(r);
        if(pagado <=0){
        JOptionPane.showMessageDialog(this, "No se ha podido pagar el recibo");
        return; 
        }
-       JOptionPane.showMessageDialog(this, "Recibo pagado");*/
+       JOptionPane.showMessageDialog(this, "Recibo pagado");
+       actualizarTabla();
+       actualizarTablaRecibos();
     }//GEN-LAST:event_bPagarReciboActionPerformed
 
     private void bRellenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRellenarActionPerformed
