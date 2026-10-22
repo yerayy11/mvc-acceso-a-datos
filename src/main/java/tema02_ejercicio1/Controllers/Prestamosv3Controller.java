@@ -19,13 +19,13 @@ public class Prestamosv3Controller {
  
     private ArrayList<Prestamov3> lista;
     private Prestamov3 prestamo; 
-    private final Recibosv3Controller RC;
+    private final Recibosv1Controller RC;
     private final FPagoController FPC;
     
     
     public Prestamosv3Controller(Connection con) {
         if(this.con == null) this.con = con;
-        RC = new Recibosv3Controller(con);
+        RC = new Recibosv1Controller(con);
         FPC = new FPagoController(con);
     }
       //findAllLazy buscar prestamos sin atributos de tipo collecion (arraylist, list)

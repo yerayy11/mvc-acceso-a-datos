@@ -8,7 +8,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import tema02_ejercicio1.Controllers.FPagoController;
 import tema02_ejercicio1.Controllers.Prestamosv3Controller;
-import tema02_ejercicio1.Controllers.Recibosv3Controller;
+import tema02_ejercicio1.Controllers.Recibosv1Controller;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Models.Prestamov3;
 import tema02_ejercicio1.Models.Recibov1;
@@ -20,7 +20,7 @@ public class PrestamoView extends javax.swing.JDialog {
     private Prestamov3 p;
     private DefaultTableModel dtm;
     private FPago fp;
-    private final Recibosv3Controller RV3C;
+    private final Recibosv1Controller RV3C;
     private Recibov1 r;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
@@ -29,7 +29,7 @@ public class PrestamoView extends javax.swing.JDialog {
         jToolBar1.setFloatable(false);
         FPC= new FPagoController(Index.contr.getCon());
         rellenarComboBox();
-        RV3C= new Recibosv3Controller(Index.contr.getCon());
+        RV3C= new Recibosv1Controller(Index.contr.getCon());
         actualizarTabla();
         this.jtPrestamos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -164,7 +164,7 @@ public class PrestamoView extends javax.swing.JDialog {
         bPagarRecibo.setText("Pagar Recibo");
         bPagarRecibo.addActionListener(this::bPagarReciboActionPerformed);
 
-        bRellenar.setText("Regresar");
+        bRellenar.setText("Refrecar");
         bRellenar.addActionListener(this::bRellenarActionPerformed);
 
         bCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/cerrar.png"))); // NOI18N
@@ -207,7 +207,7 @@ public class PrestamoView extends javax.swing.JDialog {
                                         .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                                         .addComponent(txtImpPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel4)
@@ -380,7 +380,8 @@ public class PrestamoView extends javax.swing.JDialog {
     }//GEN-LAST:event_bPagarReciboActionPerformed
 
     private void bRellenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRellenarActionPerformed
-    actualizarTabla();
+        actualizarTabla();
+        actualizarTablaRecibos();
     }//GEN-LAST:event_bRellenarActionPerformed
 
     private void bCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCerrarActionPerformed

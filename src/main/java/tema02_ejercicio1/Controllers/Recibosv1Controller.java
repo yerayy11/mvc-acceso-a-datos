@@ -10,12 +10,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import tema02_ejercicio1.Models.*;
 
-public class Recibosv3Controller {
+public class Recibosv1Controller {
     
     private Connection con;
     private  Prestamosv3Controller pv3c;
     
-    public Recibosv3Controller(Connection con) {
+    public Recibosv1Controller(Connection con) {
         if(this.con == null) this.con = con;    
     }
     
