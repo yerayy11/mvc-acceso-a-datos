@@ -8,8 +8,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import tema02_ejercicio1.Controllers.FPagoController;
 import tema02_ejercicio1.Controllers.Prestamosv3Controller;
+import tema02_ejercicio1.Controllers.Recibosv3Controller;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Models.Prestamov3;
+import tema02_ejercicio1.Models.Recibov1;
 
 public class PrestamoView extends javax.swing.JDialog {
     
@@ -17,9 +19,10 @@ public class PrestamoView extends javax.swing.JDialog {
     private Prestamosv3Controller pv3c;
     private FPagoController fpc;
     private Prestamov3 p;
-    DefaultTableModel dtm;
-    FPago fp;
-    //private Recibosv3Controller rv3c;
+    private DefaultTableModel dtm;
+    private FPago fp;
+    private Recibosv3Controller rv3c;
+    private Recibov1 r;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -27,6 +30,7 @@ public class PrestamoView extends javax.swing.JDialog {
         jToolBar1.setFloatable(false);
         fpc= new FPagoController(Index.contr.getCon());
         rellenarComboBox();
+        rv3c= new Recibosv3Controller(Index.contr.getCon());
         this.CONTR = new Prestamosv3Controller(Index.contr.getCon());
         actualizarTabla();
         this.jtPrestamos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -39,12 +43,11 @@ public class PrestamoView extends javax.swing.JDialog {
                 txtImpPrestamo.setText(jtPrestamos.getValueAt(fila, 2).toString());
                 txtImpRecibido.setText(jtPrestamos.getValueAt(fila, 3).toString());
                 jcFormasPago.setSelectedItem(jtPrestamos.getValueAt(fila, 4));
-                p=new Prestamov3();
-                p.setnNumPrest((int) jtPrestamos.getValueAt(fila, 0));
-                
+                actualizarTablaRecibos();
                 }
                 
             }
+
         });
         
     }
@@ -150,6 +153,8 @@ public class PrestamoView extends javax.swing.JDialog {
         jLabel4.setText("Importe recibido");
 
         jLabel5.setText("Forma de Pago");
+
+        txtImpRecibido.setEditable(false);
 
         jcFormasPago.setModel(new javax.swing.DefaultComboBoxModel<>());
 
@@ -294,26 +299,55 @@ public class PrestamoView extends javax.swing.JDialog {
         int borrado= pv3c.delete(prestamo);
         if(borrado <=0){
         JOptionPane.showMessageDialog(this, "No se ha podido eliminar el registro seleccionado");
+        }else{
+        JOptionPane.showMessageDialog(this, "Prestamo borrado");
+        actualizarTabla();
         }
         
     }//GEN-LAST:event_bBajaActionPerformed
 
     private void bAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAltaActionPerformed
-        
-    }//GEN-LAST:event_bAltaActionPerformed
 
-    private void bModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bModificarActionPerformed
         p= new Prestamov3();
         p.setnNumPrest(Integer.parseInt(txtNPrestamo.getText()));
         p.setdFecPrest(LocalDate.parse(txtFechaPrestamo.getText()));
         p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
-        p.setnImpReci(Integer.parseInt(txtImpRecibido.getText()));
+        p.setnImpReci(0);
+        fp= new FPago();
+        fp= (FPago) jcFormasPago.getSelectedItem();
+        p.setcCodFPago(fp);
+        int hecho= pv3c.create(p);
+        
+        if(hecho <=0){
+        JOptionPane.showMessageDialog(this, "Registro no se ha podido añadir, comprueba sus campos");
+        return;   
+        }else{
+        JOptionPane.showMessageDialog(this, "Registro añadido");
+        actualizarTabla();
+        }
+        
+    }//GEN-LAST:event_bAltaActionPerformed
+
+    private void bModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bModificarActionPerformed
+        int seleccionadas= jtPrestamos.getSelectedRow();
+        if(seleccionadas== -1){
+        JOptionPane.showMessageDialog(this, "Selecciona un registro de la tabla");
+        return; 
+        }
+        /*Al modificar no se podra cambiar ni la clave principal ni el importe recibido,
+        lo demas se podra cambiar si todavia no se ha empezado a paggar nada
+        */
+        p= new Prestamov3();
+        p.setnNumPrest(Integer.parseInt(jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 0).toString()));
+        p.setdFecPrest(LocalDate.parse(txtFechaPrestamo.getText()));
+        p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
+        p.setnImpReci(Integer.parseInt(jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 3).toString()));
         fp= new FPago();
         fp= (FPago) jcFormasPago.getSelectedItem();
         p.setcCodFPago(fp);
         int hecho= pv3c.update(p);
         if(hecho <=0){
-        JOptionPane.showMessageDialog(this, "No se ha conseguido modificar el prestamo seleccionado");
+        JOptionPane.showMessageDialog(this, "No se ha podido modificar el prestamo seleccionado");
         return;   
         }else{
         JOptionPane.showMessageDialog(this, "Registro modificado");
@@ -322,7 +356,20 @@ public class PrestamoView extends javax.swing.JDialog {
     }//GEN-LAST:event_bModificarActionPerformed
 
     private void bPagarReciboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPagarReciboActionPerformed
-       
+       r= new Recibov1();
+       int seleccionado= jtRecibos.getSelectedRow();
+       if(seleccionado==-1){
+       JOptionPane.showMessageDialog(this, "Selecciona un recibo");
+       return;
+       }
+       int numRecibo= Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 1).toString());
+       r.setnNumRecib(numRecibo);
+       /*int pagado= rv3c.pagarRecibos(r);
+       if(pagado <=0){
+       JOptionPane.showMessageDialog(this, "No se ha podido pagar el recibo");
+       return; 
+       }
+       JOptionPane.showMessageDialog(this, "Recibo pagado");*/
     }//GEN-LAST:event_bPagarReciboActionPerformed
 
     private void bRellenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRellenarActionPerformed
@@ -385,5 +432,27 @@ public class PrestamoView extends javax.swing.JDialog {
         }
     }
     
+    private void actualizarTablaRecibos() {
+    p=new Prestamov3();
+    p.setnNumPrest((int) jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 0));
+    ArrayList<Recibov1> lista= rv3c.findAllById(p);
+    dtm= new DefaultTableModel();
+    dtm=(DefaultTableModel) this.jtRecibos.getModel();
+    dtm.setRowCount(0);
+        for (Recibov1 rec : lista) {
+            dtm.addRow(new Object[]{
+            rec.getnNumPrest(),
+            rec.getnNumRecib(),
+            rec.getdFecRec(),
+            rec.getnImpRec(),
+            rec.getdFecPago()
+            });
+            
+            
+            
+        }
+    }
+
+
     
 }
