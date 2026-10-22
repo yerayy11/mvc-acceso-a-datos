@@ -9,7 +9,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Controllers.FPagoController;
-import javax.swing.ImageIcon;
 
 
 public class FPagoView extends javax.swing.JDialog {
@@ -198,7 +197,8 @@ public class FPagoView extends javax.swing.JDialog {
         if(!isSeleccionado())return;
         if(JOptionPane.showConfirmDialog(this, "Borrar la Forma de Pago seleccionada?") != JOptionPane.OK_OPTION)return;
         if(CONTR.delete(new FPago(jTable1.getValueAt(LSM.getSelectedIndices()[0], 0).toString(), null, 0)) == 0){
-                JOptionPane.showMessageDialog(this, "Error al borrar la Forma de Pago");            
+                JOptionPane.showMessageDialog(this, "Error al borrar la Forma de Pago");   
+                return;
         }
         rellenarTabla();
         JOptionPane.showMessageDialog(this, "Borrado");
@@ -220,7 +220,7 @@ public class FPagoView extends javax.swing.JDialog {
             return;
         }
         tDescripcion.setText(encontrado.getcDesFPago());
-        tNRecivos.setText(String.valueOf(encontrado.getnRecivos()));
+        tNRecivos.setText(String.valueOf(encontrado.getnRecibos()));
         JOptionPane.showMessageDialog(this, "Encontrado");
     }//GEN-LAST:event_bBuscarActionPerformed
 
@@ -269,7 +269,7 @@ public class FPagoView extends javax.swing.JDialog {
             return;
         }
         for (FPago fp : fPagos) {
-            dtm.addRow(new Object[]{fp.getcCodFPago(),fp.getcDesFPago(),fp.getnRecivos()});
+            dtm.addRow(new Object[]{fp.getcCodFPago(),fp.getcDesFPago(),fp.getnRecibos()});
         }
     }
 }

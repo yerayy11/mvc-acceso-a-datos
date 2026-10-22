@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import tema02_ejercicio1.Models.FPago;
 import tema02_ejercicio1.Models.Prestamov3;
@@ -18,17 +17,16 @@ public class Prestamosv3Controller {
     private Connection con;
     private String sentencia;
  
-    private int fila;
     private ArrayList<Prestamov3> lista;
     private Prestamov3 prestamo; 
-    private Recibosv3Controller rc;
-    private FPagoController fpc;
+    private final Recibosv1Controller RC;
+    private final FPagoController FPC;
     
     
     public Prestamosv3Controller(Connection con) {
         if(this.con == null) this.con = con;
-        rc = new Recibosv3Controller(con);
-        fpc = new FPagoController(con);
+        RC = new Recibosv1Controller(con);
+        FPC = new FPagoController(con);
     }
       //findAllLazy buscar prestamos sin atributos de tipo collecion (arraylist, list)
             public ArrayList<Prestamov3> findAllLazy() {
@@ -49,7 +47,7 @@ public class Prestamosv3Controller {
                     prestamo.setnImpPrest(rs.getInt(3));
                     prestamo.setnImpReci(rs.getInt(4));
 
-                    FPago fpago = fpc.findById(new FPago(rs.getString(5),null,0));
+                    FPago fpago = FPC.findById(new FPago(rs.getString(5),null,0));
 
                     prestamo.setcCodFPago(fpago);
 
@@ -62,14 +60,9 @@ public class Prestamosv3Controller {
 
             return lista;
         }
-        //findAllEager busca con todo incluyendo atributos tipo collection
             
-            ///
-            ///A TERMINAR
-            ///
-            ///
-            ///
-            ///
+        //findAllEager busca con todo incluyendo atributos tipo collection
+         
     public ArrayList<Prestamov3> findAllEager(){
         
         lista = new ArrayList<>();
@@ -88,11 +81,11 @@ public class Prestamosv3Controller {
                     prestamo.setnImpPrest(rs.getInt(3));
                     prestamo.setnImpReci(rs.getInt(4));
 
-                    FPago fpago = fpc.findById(new FPago(rs.getString(5),null,0));
+                    FPago fpago = FPC.findById(new FPago(rs.getString(5),null,0));
 
                     prestamo.setcCodFPago(fpago);
                     
-                    ArrayList<Recibov1> recibos = rc.findByPrestamoId(new Prestamov3(prestamo.getnNumPrest(), null, 0,0, null, null));
+                    ArrayList<Recibov1> recibos = RC.findByPrestamoId(new Prestamov3(prestamo.getnNumPrest(), null, 0,0, null, null));
                     
                     prestamo.setListaRecibos(recibos);
                     
@@ -143,8 +136,10 @@ public Prestamov3 findById(Prestamov3 pId) {
 
     public int create(Prestamov3 prestamo) {
 
+    int filasInsertadas = 0;
+        
     sentencia = "INSERT INTO PRESTAMOS VALUES (?,?,?,?,?)";
-
+    
     try (PreparedStatement ps = con.prepareStatement(sentencia)) {
 
         ps.setInt(1, prestamo.getnNumPrest());
@@ -153,16 +148,25 @@ public Prestamov3 findById(Prestamov3 pId) {
         ps.setInt(4, prestamo.getnImpReci());
         ps.setString(5, prestamo.getcCodFPago().getcCodFPago());
 
-        return ps.executeUpdate();
+        filasInsertadas = ps.executeUpdate();
+        
+        RC.generarRecibos(prestamo);
 
     } catch (SQLException ex) {
         System.err.println(ex.getMessage());
     }
 
-    return 0;
+    return filasInsertadas;
 }
     
     public int update(Prestamov3 prestamo) {
+        
+    double pagado = calcularDeudaPrestamo(prestamo.getnNumPrest());
+    
+    if(pagado<prestamo.getnImpPrest()){
+        System.out.println("el prestamo tiene una deuda que todavía le falta por pagar o que tiene recibos pagados");
+        return 0;
+    }
 
     sentencia = """
                 UPDATE PRESTAMOS
@@ -198,7 +202,7 @@ public int delete(Prestamov3 prestamo) {
         return 0;
     }
     
-    int recibosBorrados = rc.deleteByPrestamoId(prestamo);
+    int recibosBorrados = RC.deleteByPrestamoId(prestamo);
     
     if(recibosBorrados < 0) return 0;
     
@@ -216,34 +220,6 @@ public int delete(Prestamov3 prestamo) {
 
     return 0;
 }
-    
-    //metodo para obtener los recibos generados. Usa procedimiento propio de la base de datos llamado sp_GENEREARRECIBOS el cual tiene dos parámetros: uno de entrada y otro de salida
-
-    public int generarRecibos(int numPrestamo) {
-
-        int recibosGenerados = -1;
-
-        try {
-
-            try (CallableStatement cs = con.prepareCall("{CALL sp_GENERARRECIBOS(?, ?)}")) {
-                // Parámetro de entrada
-                cs.setInt(1, numPrestamo);
-                
-                // Parámetro de salida
-                cs.registerOutParameter(2, Types.INTEGER);
-                
-                cs.execute();
-                
-                recibosGenerados = cs.getInt(2);
-            }
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return recibosGenerados;
-
-    }
 
     //Metodo para calcular la deuda de los prestamos. Usa la funcion fn_calcular_deuda_prestamo que recibe el numero de prestamo.
 
@@ -266,6 +242,28 @@ public int delete(Prestamov3 prestamo) {
             System.out.println(ex.getMessage());
         }
             return deuda;
-        }
-
     }
+    
+    public int actualizarImporteRecibido(Prestamov3 prestamo){
+        int filasActualizadas = 0;
+        
+        double deuda = calcularDeudaPrestamo(prestamo.getnNumPrest());
+        
+        if(deuda<=0) return filasActualizadas;
+        
+        String sql = "UPDATE RECIBOS SET NIMPRECI = TRUNCATE(NIMPPREST - ?,0) WHERE NNUMPREST = ?";
+        
+        try(PreparedStatement ps = con.prepareStatement(sql)){
+            
+            ps.setDouble(1, deuda);
+            
+            ps.setInt(2, prestamo.getnNumPrest());
+            
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+        return filasActualizadas;
+    }
+
+}
