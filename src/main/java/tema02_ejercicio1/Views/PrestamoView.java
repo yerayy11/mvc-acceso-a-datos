@@ -314,7 +314,7 @@ public class PrestamoView extends javax.swing.JDialog {
         }else{
             JOptionPane.showMessageDialog(this, "Prestamo borrado");
             actualizarTabla();
-            actualizarTablaRecibos();
+            DTM_REC.setRowCount(0);
         }
         
     }//GEN-LAST:event_bBajaActionPerformed
