@@ -195,13 +195,11 @@ public Prestamov3 findById(Prestamov3 pId) {
 }
 public int delete(Prestamov3 prestamo) {
 
-    double pagado = calcularDeudaPrestamo(prestamo.getnNumPrest());
+ 
     
-    if(pagado<prestamo.getnImpPrest()){
-        System.out.println("el prestamo tiene una deuda que todavía le falta por pagar o que tiene recibos pagados");
+    if(tienePrestamosPagados(prestamo)){
         return 0;
     }
-    
     int recibosBorrados = RC.deleteByPrestamoId(prestamo);
     
     if(recibosBorrados < 0) return 0;
@@ -269,6 +267,32 @@ public int actualizarImporteRecibido(Prestamov3 prestamo){
 
     return filasActualizadas;
 }
+
+    private boolean tienePrestamosPagados(Prestamov3 prestamo) {
+        
+        
+        String sentencia = "SELECT * FROM PRESTAMOS WHERE nNumPrest = ? AND nImpReci>0";
+        
+        try(PreparedStatement ps = con.prepareStatement(sentencia)){
+            
+            ps.setInt(1, prestamo.getnNumPrest());
+            
+            try(ResultSet rs = ps.executeQuery()){
+                
+                //el prestamo tiene el impuesto de recibo mayor a 0
+                if(rs.next()){
+                    return true;
+                }
+                
+            }catch(SQLException ex){
+        System.err.println(ex.getMessage());
+    }
+        }catch(SQLException ex){
+        System.err.println(ex.getMessage());
+    }
+        
+        return false;
+    }
 
 
 }
