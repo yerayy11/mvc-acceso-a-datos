@@ -362,14 +362,14 @@ public class PrestamoView extends javax.swing.JDialog {
     }//GEN-LAST:event_bModificarActionPerformed
 
     private void bPagarReciboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPagarReciboActionPerformed
-       r= new Recibov1();
+        r= new Recibov1();
        int seleccionado= jtRecibos.getSelectedRow();
        if(seleccionado==-1){
        JOptionPane.showMessageDialog(this, "Selecciona un recibo");
        return;
        }
-       int numRecibo= Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 0).toString());
-       int numPrestamo = Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 1).toString());
+       int numRecibo= Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 1).toString());
+       int numPrestamo = Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 0).toString());
        r.setnNumRecib(numRecibo);
        r.setnNumPrest(numPrestamo);
        int pagado= RV3C.pagarRecibo(r);
@@ -380,6 +380,7 @@ public class PrestamoView extends javax.swing.JDialog {
        JOptionPane.showMessageDialog(this, "Recibo pagado");
        actualizarTabla();
        actualizarTablaRecibos();
+
     }//GEN-LAST:event_bPagarReciboActionPerformed
 
     private void bRellenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRellenarActionPerformed
@@ -444,6 +445,8 @@ public class PrestamoView extends javax.swing.JDialog {
     }
     
     private void actualizarTablaRecibos() {
+        int fila = jtPrestamos.getSelectedRow();
+        if(fila == -1) return;
     p=new Prestamov3();
     p.setnNumPrest((int) jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 0));
     ArrayList<Recibov1> lista= RV3C.findByPrestamoId(p);
