@@ -64,7 +64,7 @@ public class FPagoController {
 
     public int update(FPago f) {
         if (f == null) return 0;
-        String sentencia = "UPDATE FPAGO SET CDESFPAGO = ?, NRECIBOS = ? WHERE CCODFPAGO LIKE ?";
+        String sentencia = "UPDATE FPAGO SET CDESFPAGO = ?, NRECIBOS = ? WHERE CCODFPAGO = ?";
 
         try (PreparedStatement ps = con.prepareStatement(sentencia)) {
             ps.setString(1, f.getcDesFPago());

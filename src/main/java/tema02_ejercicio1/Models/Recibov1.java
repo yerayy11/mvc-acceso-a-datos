@@ -2,7 +2,7 @@ package tema02_ejercicio1.Models;
 
 import java.time.LocalDate;
 
-class Recibov1 {
+public class Recibov1 {
     private int nNumPrest;
     private int nNumRecib;
     private LocalDate dFecRec;
