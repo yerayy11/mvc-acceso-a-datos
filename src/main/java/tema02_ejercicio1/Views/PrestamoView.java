@@ -419,7 +419,7 @@ public class PrestamoView extends javax.swing.JDialog {
     dtm=(DefaultTableModel) this.jtPrestamos.getModel();
     dtm.setRowCount(0);
     pv3c= new Prestamosv3Controller(Index.contr.getCon());
-    ArrayList<Prestamov3> lista= new ArrayList<>();
+    ArrayList<Prestamov3> lista;
     lista= pv3c.findAllLazy();
         for (Prestamov3 prestamo : lista) {
             dtm.addRow(new Object[]{
