@@ -1,5 +1,6 @@
 package tema02_ejercicio1.Views;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -16,6 +17,8 @@ public class PrestamoView extends javax.swing.JDialog {
     private Prestamosv3Controller pv3c;
     private FPagoController fpc;
     private Prestamov3 p;
+    DefaultTableModel dtm;
+    FPago fp;
     //private Recibosv3Controller rv3c;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
@@ -69,7 +72,8 @@ public class PrestamoView extends javax.swing.JDialog {
         txtImpRecibido = new javax.swing.JTextField();
         jcFormasPago = new javax.swing.JComboBox<>();
         bBuscar = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        bPagarRecibo = new javax.swing.JButton();
+        bRellenar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -153,8 +157,11 @@ public class PrestamoView extends javax.swing.JDialog {
         bBuscar.setToolTipText("Buscar");
         bBuscar.addActionListener(this::bBuscarActionPerformed);
 
-        jButton1.setText("Pagar Recibo");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        bPagarRecibo.setText("Pagar Recibo");
+        bPagarRecibo.addActionListener(this::bPagarReciboActionPerformed);
+
+        bRellenar.setText("Regresar");
+        bRellenar.addActionListener(this::bRellenarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -169,6 +176,12 @@ public class PrestamoView extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(bPagarRecibo, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(101, 101, 101)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -185,21 +198,17 @@ public class PrestamoView extends javax.swing.JDialog {
                                 .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                                 .addComponent(txtImpPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(txtImpRecibido, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
+                        .addGap(12, 12, 12)
                         .addComponent(bBuscar)
-                        .addGap(75, 75, 75))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bRellenar)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,9 +221,13 @@ public class PrestamoView extends javax.swing.JDialog {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(36, 36, 36)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(1, 1, 1))
+                            .addComponent(bRellenar)
                             .addComponent(bBuscar))
                         .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -233,7 +246,7 @@ public class PrestamoView extends javax.swing.JDialog {
                             .addComponent(jLabel5)
                             .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(88, 88, 88)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bPagarRecibo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -243,6 +256,22 @@ public class PrestamoView extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBuscarActionPerformed
+
+        String codigo= txtNPrestamo.getText();
+        if(codigo.isBlank()){
+        JOptionPane.showMessageDialog(this, "Escribe un codigo para buscar");
+        return;
+        }
+        for(int i=0; i<jtPrestamos.getRowCount(); i++){
+        String valor= jtPrestamos.getValueAt(i, 0).toString();
+        if(valor.equalsIgnoreCase(codigo)){
+        jtPrestamos.setRowSelectionInterval(i, i);
+        jtPrestamos.scrollRectToVisible(jtPrestamos.getCellRect(i, 0, true));
+        return;
+        }
+        }
+        JOptionPane.showMessageDialog(this, "Codigo no encontrado");
+        
         
     }//GEN-LAST:event_bBuscarActionPerformed
 
@@ -270,12 +299,31 @@ public class PrestamoView extends javax.swing.JDialog {
     }//GEN-LAST:event_bAltaActionPerformed
 
     private void bModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bModificarActionPerformed
-        
+        p= new Prestamov3();
+        p.setnNumPrest(Integer.parseInt(txtNPrestamo.getText()));
+        p.setdFecPrest(LocalDate.parse(txtFechaPrestamo.getText()));
+        p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
+        p.setnImpReci(Integer.parseInt(txtImpRecibido.getText()));
+        fp= new FPago();
+        fp= (FPago) jcFormasPago.getSelectedItem();
+        p.setcCodFPago(fp);
+        int hecho= pv3c.update(p);
+        if(hecho <=0){
+        JOptionPane.showMessageDialog(this, "No se ha conseguido modificar el prestamo seleccionado");
+        return;   
+        }else{
+        JOptionPane.showMessageDialog(this, "Registro modificado");
+        actualizarTabla();
+        }
     }//GEN-LAST:event_bModificarActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void bPagarReciboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPagarReciboActionPerformed
        
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_bPagarReciboActionPerformed
+
+    private void bRellenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRellenarActionPerformed
+    actualizarTabla();
+    }//GEN-LAST:event_bRellenarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -283,7 +331,8 @@ public class PrestamoView extends javax.swing.JDialog {
     private javax.swing.JButton bBaja;
     private javax.swing.JButton bBuscar;
     private javax.swing.JButton bModificar;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton bPagarRecibo;
+    private javax.swing.JButton bRellenar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -302,11 +351,12 @@ public class PrestamoView extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void actualizarTabla() {
-    DefaultTableModel dtm= new DefaultTableModel();
+    dtm= new DefaultTableModel();
     dtm=(DefaultTableModel) this.jtPrestamos.getModel();
+    dtm.setRowCount(0);
     pv3c= new Prestamosv3Controller(Index.contr.getCon());
     ArrayList<Prestamov3> lista= new ArrayList<>();
-    lista= pv3c.findAllEager();
+    lista= pv3c.findAllLazy();
         for (Prestamov3 prestamo : lista) {
             dtm.addRow(new Object[]{
             prestamo.getnNumPrest(),
@@ -320,7 +370,7 @@ public class PrestamoView extends javax.swing.JDialog {
     }
 
     private void rellenarComboBox() {
-        ArrayList<FPago> lista= fpc.selectAll();
+        ArrayList<FPago> lista= fpc.findAll();
         for (FPago fp : lista) {
             jcFormasPago.addItem(fp);
         }
