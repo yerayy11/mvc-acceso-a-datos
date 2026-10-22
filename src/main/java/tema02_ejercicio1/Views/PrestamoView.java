@@ -273,16 +273,17 @@ public class PrestamoView extends javax.swing.JDialog {
 
         String codigo= txtNPrestamo.getText();
         if(codigo.isBlank()){
-        JOptionPane.showMessageDialog(this, "Escribe un codigo para buscar");
-        return;
+            JOptionPane.showMessageDialog(this, "Escribe un codigo para buscar");
+            return;
         }
         for(int i=0; i<jtPrestamos.getRowCount(); i++){
-        String valor= jtPrestamos.getValueAt(i, 0).toString();
-        if(valor.equalsIgnoreCase(codigo)){
-        jtPrestamos.setRowSelectionInterval(i, i);
-        jtPrestamos.scrollRectToVisible(jtPrestamos.getCellRect(i, 0, true));
-        return;
-        }
+            String valor= jtPrestamos.getValueAt(i, 0).toString();
+            if(valor.equalsIgnoreCase(codigo)){
+                jtPrestamos.setRowSelectionInterval(i, i);
+                jtPrestamos.scrollRectToVisible(jtPrestamos.getCellRect(i, 0, true));
+                actualizarTablaRecibos();
+                return;
+            }       
         }
         JOptionPane.showMessageDialog(this, "Codigo no encontrado");
         
@@ -307,6 +308,7 @@ public class PrestamoView extends javax.swing.JDialog {
         }else{
         JOptionPane.showMessageDialog(this, "Prestamo borrado");
         actualizarTabla();
+        actualizarTablaRecibos();
         }
         
     }//GEN-LAST:event_bBajaActionPerformed
@@ -355,6 +357,7 @@ public class PrestamoView extends javax.swing.JDialog {
         }else{
         JOptionPane.showMessageDialog(this, "Registro modificado");
         actualizarTabla();
+        actualizarTablaRecibos();
         }
     }//GEN-LAST:event_bModificarActionPerformed
 
