@@ -224,10 +224,10 @@ public int delete(Prestamov3 prestamo) {
     //Metodo para calcular la deuda de los prestamos. Usa la funcion fn_calcular_deuda_prestamo que recibe el numero de prestamo.
 
     public double calcularDeudaPrestamo(int numPrestamo) {
-
+        System.out.println("Ha llegado a la función deuda prestamo");
         double deuda = 0;
 
-        try (CallableStatement cs = con.prepareCall("{? = call fn_calcular_deuda_prestamo(?)}")) {
+        try (CallableStatement cs = con.prepareCall("{ ? = call fn_calcular_deuda_prestamo(?) }")) {
 
             cs.registerOutParameter(1, Types.DECIMAL);
 
@@ -239,31 +239,37 @@ public int delete(Prestamov3 prestamo) {
             deuda = cs.getDouble(1);
 
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            System.err.println(ex.getMessage());
+        }catch(Exception e){
+            System.err.println("Error: "+e.getMessage());
         }
             return deuda;
     }
     
+   
+
     public int actualizarImporteRecibido(Prestamov3 prestamo){
-        int filasActualizadas = 0;
-        
-        double deuda = calcularDeudaPrestamo(prestamo.getnNumPrest());
-        
-        if(deuda<=0) return filasActualizadas;
-        
-        String sql = "UPDATE RECIBOS SET NIMPRECI = TRUNCATE(NIMPPREST - ?,0) WHERE NNUMPREST = ?";
-        
-        try(PreparedStatement ps = con.prepareStatement(sql)){
-            
-            ps.setDouble(1, deuda);
-            
-            ps.setInt(2, prestamo.getnNumPrest());
-            
-        } catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-        }
-        
-        return filasActualizadas;
+
+    int filasActualizadas = 0;
+
+    //COALESCE devuelve el primer valor que no sea nulo. si todos los valores son nulos entonces devuelve null
+    String sql = "UPDATE PRESTAMOS "
+               + "SET nImpReci = (SELECT COALESCE(SUM(nImpRec), 0) "
+               + "                FROM RECIBOS "
+               + "                WHERE nNumPrest = ? AND dFecPago IS NOT NULL) "
+               + "WHERE nNumPrest = ?";
+
+    try(PreparedStatement ps = con.prepareStatement(sql)){
+
+        ps.setInt(1, prestamo.getnNumPrest());
+        ps.setInt(2, prestamo.getnNumPrest());
+
+        filasActualizadas = ps.executeUpdate();
+
+    } catch(SQLException ex){
+        System.err.println(ex.getMessage());
     }
 
+    return filasActualizadas;
+}
 }

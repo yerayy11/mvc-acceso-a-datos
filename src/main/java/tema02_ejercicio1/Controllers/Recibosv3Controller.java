@@ -84,30 +84,30 @@ public class Recibosv3Controller {
         return lista;
     }
     
-    public int pagarRecibo(Recibov1 recibo){
-        int recibosPagados = -1;
+   public int pagarRecibo(Recibov1 recibo){
+    int recibosPagados = -1;
+    
+    String sql = "UPDATE RECIBOS SET DFECPAGO = CURDATE() WHERE NNUMRECIB = ? AND NNUMPREST = ? AND DFECPAGO IS NULL";
+    
+    try(PreparedStatement ps = con.prepareStatement(sql)){
         
-        String sql = "UPDATE RECIBOS SET DFECPAGO = CURDATE() WHERE NNUMRECIB = ? AND NNUMPREST = ? AND DFECPAGO IS NULL";
+        ps.setInt(1, recibo.getnNumRecib());
+        ps.setInt(2, recibo.getnNumPrest());
         
-        try(PreparedStatement ps = con.prepareStatement(sql)){
-            
-            //Añadimos el campo id del recibo correspondiente
-            ps.setInt(1, recibo.getnNumRecib());
-            
-            ps.setInt(2, recibo.getnNumPrest());
-            
-            //recogemos el número de filas afectadas
-            recibosPagados = ps.executeUpdate();
-            
-            pv3c = new Prestamosv3Controller(con);
-            pv3c.actualizarImporteRecibido(new Prestamov3(recibo.getnNumPrest(), null, 0, 0,null,null));
-            
-        } catch (SQLException ex) {
-            System.err.println("Error al pagar el recibo: " + ex.getMessage());
-        }
+        recibosPagados = ps.executeUpdate();
         
-        return recibosPagados;
+    } catch (SQLException ex) {
+        System.err.println("Error al pagar el recibo: " + ex.getMessage());
     }
+    
+    //Si se ha pagado el recibo, actualizamos el importe recibido del préstamo
+    if(recibosPagados > 0){
+        pv3c = new Prestamosv3Controller(con);
+        pv3c.actualizarImporteRecibido(new Prestamov3(recibo.getnNumPrest(), null, 0, 0, null, null));
+    }
+    
+    return recibosPagados;
+}
     
     public int deleteByPrestamoId(Prestamov3 prestamo){
         int filasBorradas = -1;
