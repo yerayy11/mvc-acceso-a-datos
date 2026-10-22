@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DBController {
 
     private final String HOST = "localhost";
-    private final String PORT_MYSQL = "3306";
+    private final String PORT_MYSQL = "330";
     private final String DB = "BANCOS";
 
     private final String URL_MYSQL = "jdbc:mysql://" + HOST + ":" + PORT_MYSQL + "/" + DB;
