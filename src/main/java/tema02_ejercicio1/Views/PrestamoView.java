@@ -365,8 +365,8 @@ public class PrestamoView extends javax.swing.JDialog {
        JOptionPane.showMessageDialog(this, "Selecciona un recibo");
        return;
        }
-       int numRecibo= Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 1).toString());
-       int numPrestamo = Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 2).toString());
+       int numRecibo= Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 0).toString());
+       int numPrestamo = Integer.parseInt(jtRecibos.getValueAt(jtRecibos.getSelectedRow(), 1).toString());
        r.setnNumRecib(numRecibo);
        r.setnNumPrest(numPrestamo);
        int pagado= RV3C.pagarRecibo(r);

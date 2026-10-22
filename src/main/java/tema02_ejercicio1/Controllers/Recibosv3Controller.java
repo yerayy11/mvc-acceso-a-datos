@@ -13,11 +13,10 @@ import tema02_ejercicio1.Models.*;
 public class Recibosv3Controller {
     
     private Connection con;
-    private final Prestamosv3Controller PV3C;
+    private  Prestamosv3Controller pv3c;
     
     public Recibosv3Controller(Connection con) {
         if(this.con == null) this.con = con;    
-        this.PV3C = new Prestamosv3Controller(con);
     }
     
     public int generarRecibos(Prestamov3 prestamo) {
@@ -100,7 +99,8 @@ public class Recibosv3Controller {
             //recogemos el número de filas afectadas
             recibosPagados = ps.executeUpdate();
             
-            PV3C.actualizarImporteRecibido(new Prestamov3(recibo.getnNumPrest(), null, 0, 0,null,null));
+            pv3c = new Prestamosv3Controller(con);
+            pv3c.actualizarImporteRecibido(new Prestamov3(recibo.getnNumPrest(), null, 0, 0,null,null));
             
         } catch (SQLException ex) {
             System.err.println("Error al pagar el recibo: " + ex.getMessage());
