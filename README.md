@@ -1,12 +1,19 @@
 # MVC - Acceso a Datos
 
-Trabajo en grupo de Acceso a Datos (2º DAM): aplicación de escritorio en Java (Swing) con patrón MVC y JDBC sobre MySQL. Trabaja con la base de datos `BANCOS` (formas de pago, préstamos y recibos).
+Trabajo en grupo de Acceso a Datos (2º DAM): aplicación de escritorio en Java (Swing) con patrón MVC y JDBC sobre MySQL. Trabaja con la base de datos `BANCOS`: formas de pago, préstamos y recibos.
+
+## Funcionalidad
+
+- **Formas de pago:** alta, baja, modificación y búsqueda.
+- **Préstamos:** alta (genera los recibos con el procedimiento `sp_GENERARRECIBOS`), baja y modificación (solo si todavía no se ha pagado ningún recibo; al modificar se regeneran los recibos) y búsqueda.
+- **Recibos:** consulta de los recibos de cada préstamo y pago de recibos (al pagar se actualiza el importe recibido del préstamo).
 
 ## Requisitos
 
 - **JDK 26** (el `pom.xml` compila con la versión 26).
 - **NetBeans** (proyecto Maven).
 - **MySQL 8.0.13 o superior**, en `localhost:3306`. El script de la base de datos usa `DEFAULT (CURRENT_DATE)`, que no existe en versiones anteriores.
+- Un cliente SQL que entienda `DELIMITER`: **MySQL Workbench** o la consola `mysql`.
 
 ## Puesta en marcha
 
@@ -14,18 +21,29 @@ Trabajo en grupo de Acceso a Datos (2º DAM): aplicación de escritorio en Java 
    ```
    git clone https://github.com/yerayy11/mvc-acceso-a-datos.git
    ```
-2. Crear la base de datos en local. `DBController` se conecta a `jdbc:mysql://localhost:3306/BANCOS` con usuario `BANCOS` y contraseña `BANCOS`, así que cada uno monta lo mismo en su equipo:
-   1. Abre una consola de MySQL como administrador (MySQL Workbench o `mysql -u root -p`) y ejecuta:
-      ```sql
-      CREATE DATABASE IF NOT EXISTS BANCOS;
-      CREATE USER IF NOT EXISTS 'BANCOS'@'localhost' IDENTIFIED BY 'BANCOS';
-      GRANT ALL PRIVILEGES ON BANCOS.* TO 'BANCOS'@'localhost';
-      ```
-   2. Ejecuta el script [`sql/BANCOS_mysql.sql`](sql/BANCOS_mysql.sql): crea las tablas `FPAGO`, `PRESTAMOS` y `RECIBOS`, inserta datos de ejemplo y crea `sp_GENERARRECIBOS`, `fn_calcular_deuda_prestamo` y `sp_obtener_recibos_pendientes`. Desde la consola: `mysql -u root -p BANCOS < sql/BANCOS_mysql.sql`. El script usa `DELIMITER`, que algunos clientes SQL no entienden; MySQL Workbench y la consola `mysql` sí.
-   3. El script no se puede ejecutar dos veces seguidas (los `INSERT` fallarían por claves duplicadas). Para empezar de cero, borra la base de datos con `DROP DATABASE BANCOS;` (elimina todos sus datos locales) y repite los pasos 1 y 2.
+2. Crear la base de datos. El script [`sql/bancos-mysql.sql`](sql/bancos-mysql.sql) lo hace todo: crea la base de datos `BANCOS`, el usuario `bancos` (contraseña `bancos`, con permisos solo sobre `BANCOS`), las tablas, los datos de ejemplo y el procedimiento y las funciones almacenadas. Ejecútalo **como administrador (root)**:
+   - Con la consola, desde la carpeta del repositorio:
+     ```
+     mysql -u root -p < sql/bancos-mysql.sql
+     ```
+   - Con MySQL Workbench: File → Open SQL Script, elige el archivo y ejecuta todo el script (icono del rayo).
+
+   > **El script borra la base de datos `BANCOS` si ya existe** y la recrea con los datos de ejemplo. Sirve también para dejar los datos como al principio después de hacer pruebas.
 3. Abrir la carpeta del repositorio en NetBeans (File → Open Project).
 4. Clean and Build para comprobar que compila.
-5. Ejecutar la clase `tema02_ejercicio1.Launcher` (clic derecho → Run File).
+5. Ejecutar: Run Project (F6), o clic derecho sobre `tema02_ejercicio1.Launcher` → Run File.
+
+Los datos de conexión están en `DBController`: `localhost:3306`, base de datos `BANCOS`, usuario `bancos`, contraseña `bancos`.
+
+### Si algo falla
+
+| Síntoma | Qué revisar |
+|---|---|
+| "Error en la conexión" al arrancar | Que el servicio MySQL esté en marcha, que escuche en el puerto 3306 y que hayas ejecutado el script. Prueba `mysql -u bancos -pbancos BANCOS`. |
+| `Access denied for user` | Los nombres de usuario de MySQL distinguen mayúsculas: debe ser `bancos` en minúsculas. Vuelve a ejecutar el script como root. |
+| Error al compilar | Que NetBeans use el JDK 26 (Tools → Java Platforms y propiedades del proyecto). |
+| `PROCEDURE ... does not exist` | El script no se ejecutó entero. Usa Workbench o la consola `mysql` (otros clientes no entienden `DELIMITER`). |
+| Instalaste una versión anterior del script | Vuelve a ejecutar el script actual: recrea el usuario y los permisos. |
 
 ## Estructura del proyecto
 
@@ -37,7 +55,12 @@ src/main/java/tema02_ejercicio1/
 └── Launcher.java  punto de entrada
 src/main/resources/iconos/   iconos de las ventanas
 sql/                         script de la base de datos
+docs/                        documentación (pruebas manuales)
 ```
+
+## Pruebas
+
+No hay tests automatizados. Antes de entregar y al revisar cambios importantes se sigue la lista de [pruebas manuales](docs/pruebas-manuales.md).
 
 ## Cómo trabajamos con Git
 
@@ -51,13 +74,15 @@ Objetivo: que `main` esté siempre en un estado que compila y funciona, y que na
    - `feature/nombre-de-la-tarea` para funcionalidad nueva.
    - `fix/nombre-del-problema` para corregir errores.
    - `docs/nombre-del-cambio` para documentación y scripts.
-4. **Commits pequeños y claros**, en español y en imperativo: "Añadir método findAll en el DAO", no "cambios".
-5. **Todo Pull Request lo revisa al menos otra persona** (nunca quien lo ha escrito) antes de mergear.
-6. **Merge con "Squash and merge"**, para que `main` quede con un commit por tarea.
-7. **Antes de abrir el Pull Request, comprobar que compila** (Clean and Build en NetBeans).
-8. **No subir** contraseñas personales, carpetas `target/` ni `nbproject/private/`.
-9. **Archivos delicados:** `pom.xml` y la clase de conexión a la base de datos. Avisar al grupo antes de modificarlos.
-10. **Ventanas del diseñador de NetBeans** (`.java` + `.form`): una sola persona por ventana a la vez; los conflictos en `.form` son muy difíciles de resolver.
+4. **Commits pequeños y claros**, en español y en imperativo: "Añadir método findAll en el DAO", no "cambios". Los mensajes son públicos y permanentes: tono profesional.
+5. **Todo Pull Request lo revisa al menos otra persona** (nunca quien lo ha escrito) antes de mergear. **Revisar es descargar la rama, ejecutar la aplicación y repetir las pruebas que describe el PR**; no basta con leer el código.
+6. **Un Pull Request por tarea, directo a `main`.** No se apilan PRs sobre ramas de otros: se revisan peor y el historial pierde quién hizo qué.
+7. **Merge con "Squash and merge"**, para que `main` quede con un commit por tarea.
+8. **Antes de abrir el Pull Request, comprobar que compila** (Clean and Build en NetBeans).
+9. **No subir** contraseñas personales, carpetas `target/` ni `nbproject/private/`.
+10. **Archivos delicados:** `pom.xml`, `DBController` y el script SQL. Avisar al grupo antes de modificarlos.
+11. **Ventanas del diseñador de NetBeans** (`.java` + `.form`): una sola persona por ventana a la vez; los conflictos en `.form` son muy difíciles de resolver.
+12. **Cada bug o tarea tiene su Issue.** El Pull Request lo enlaza escribiendo `Closes #N` en la descripción, y el Issue se cierra solo al mergear. No se cierra un Issue a mano sin comprobar que está resuelto.
 
 ### Flujo paso a paso
 
@@ -83,3 +108,12 @@ git push -u origin feature/nombre-de-la-tarea
 Después, en GitHub: **Compare & pull request** → rellenar la plantilla → pedir revisión a un compañero → mergear con *Squash and merge* → *Delete branch*.
 
 Si aparece un conflicto en el paso 4, no lo resuelvas a ciegas: avisa a quien haya tocado ese archivo.
+
+### Revisar el Pull Request de un compañero
+
+```
+git fetch
+git switch nombre-de-la-rama-del-compañero
+```
+
+Abre el proyecto en NetBeans, Clean and Build, ejecuta las pruebas del apartado "Pruebas realizadas" del PR y después aprueba o comenta. Para volver a lo tuyo: `git switch main`.
