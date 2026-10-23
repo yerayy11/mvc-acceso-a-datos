@@ -24,16 +24,16 @@ public class PrestamoView extends javax.swing.JDialog {
     private final Recibosv1Controller RV3C;
     private Recibov1 r;
     private int filaSeleccionada = 0;
-    private Index index;
+    private final Index INDEX;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        index = new Index();
+        INDEX = (Index) parent;
         jToolBar1.setFloatable(false);
-        FPC= new FPagoController(Index.contr.getCon());
-        RV3C= new Recibosv1Controller(Index.contr.getCon());
-        PV3C = new Prestamosv3Controller(Index.contr.getCon());
+        FPC= new FPagoController(Index.con);
+        RV3C= new Recibosv1Controller(Index.con);
+        PV3C = new Prestamosv3Controller(Index.con);
         DTM_PRES = (DefaultTableModel) jtPrestamos.getModel();
         DTM_REC = (DefaultTableModel) jtRecibos.getModel();
         rellenarComboBox();
@@ -79,10 +79,10 @@ public class PrestamoView extends javax.swing.JDialog {
         jcFormasPago = new javax.swing.JComboBox<>();
         bBuscar = new javax.swing.JButton();
         bPagarRecibo = new javax.swing.JButton();
-        bRellenar = new javax.swing.JButton();
         bCerrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Prestamos");
 
         bAlta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/alta.png"))); // NOI18N
         bAlta.setToolTipText("Alta");
@@ -157,8 +157,6 @@ public class PrestamoView extends javax.swing.JDialog {
 
         jLabel5.setText("Forma de Pago");
 
-        txtFechaPrestamo.setEditable(false);
-
         txtImpRecibido.setEditable(false);
 
         jcFormasPago.setModel(new javax.swing.DefaultComboBoxModel<>());
@@ -169,9 +167,6 @@ public class PrestamoView extends javax.swing.JDialog {
 
         bPagarRecibo.setText("Pagar Recibo");
         bPagarRecibo.addActionListener(this::bPagarReciboActionPerformed);
-
-        bRellenar.setText("Refrecar");
-        bRellenar.addActionListener(this::bRellenarActionPerformed);
 
         bCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/cerrar.png"))); // NOI18N
         bCerrar.addActionListener(this::bCerrarActionPerformed);
@@ -200,29 +195,30 @@ public class PrestamoView extends javax.swing.JDialog {
                                 .addGap(101, 101, 101)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addGap(44, 44, 44)
-                                        .addComponent(txtNPrestamo))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel1))
+                                        .addGap(39, 39, 39)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtFechaPrestamo)
+                                            .addComponent(txtNPrestamo)))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtFechaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                                        .addComponent(txtImpPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtImpRecibido, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel4)
+                                            .addComponent(jLabel5)
+                                            .addComponent(jLabel3))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(36, 36, 36)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(txtImpPrestamo, javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(txtImpRecibido, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jcFormasPago, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                 .addGap(12, 12, 12)
                                 .addComponent(bBuscar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(bRellenar))
+                                .addGap(80, 80, 80))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(bCerrar)))
@@ -245,7 +241,6 @@ public class PrestamoView extends javax.swing.JDialog {
                                     .addComponent(jLabel1)
                                     .addComponent(txtNPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(1, 1, 1))
-                            .addComponent(bRellenar)
                             .addComponent(bBuscar))
                         .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -321,7 +316,7 @@ public class PrestamoView extends javax.swing.JDialog {
 
     private void bAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAltaActionPerformed
         p= new Prestamov3();
-        switch (this.index.comprobarCampo(txtNPrestamo.getText())) {
+        switch (this.INDEX.comprobarCampo(txtNPrestamo.getText())) {
             case 0:
                 p.setnNumPrest(Integer.parseInt(txtNPrestamo.getText()));
                 break;
@@ -336,7 +331,7 @@ public class PrestamoView extends javax.swing.JDialog {
                 return;
         }
         p.setdFecPrest(LocalDate.now());
-        switch (this.index.comprobarCampo(txtImpPrestamo.getText())) {
+        switch (this.INDEX.comprobarCampo(txtImpPrestamo.getText())) {
             case 0:
                 p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
                 break;
@@ -414,11 +409,6 @@ public class PrestamoView extends javax.swing.JDialog {
 
     }//GEN-LAST:event_bPagarReciboActionPerformed
 
-    private void bRellenarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRellenarActionPerformed
-        actualizarTabla();
-        actualizarTablaRecibos();
-    }//GEN-LAST:event_bRellenarActionPerformed
-
     private void bCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCerrarActionPerformed
         this.dispose();
     }//GEN-LAST:event_bCerrarActionPerformed
@@ -431,7 +421,6 @@ public class PrestamoView extends javax.swing.JDialog {
     private javax.swing.JButton bCerrar;
     private javax.swing.JButton bModificar;
     private javax.swing.JButton bPagarRecibo;
-    private javax.swing.JButton bRellenar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

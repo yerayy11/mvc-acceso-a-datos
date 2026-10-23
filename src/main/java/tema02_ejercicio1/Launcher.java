@@ -1,9 +1,9 @@
 package tema02_ejercicio1;
 
+import java.sql.Connection;
 import javax.swing.JOptionPane;
 import tema02_ejercicio1.Controllers.DBController;
 import tema02_ejercicio1.Views.Index;
-import static tema02_ejercicio1.Views.Index.contr;
 
 public class Launcher {
     
@@ -11,12 +11,13 @@ public class Launcher {
         
         DBController contr = new DBController();
         //en caso de que la conexión sea mala
-        if(contr.getCon() == null){
+        Connection con;
+        if((con = contr.getCon()) == null){
             JOptionPane.showMessageDialog(null, "Error en la conexión");
            
             return;
         }
-        new Index().setVisible(true);
+        new Index(con).setVisible(true);
         
         
     }

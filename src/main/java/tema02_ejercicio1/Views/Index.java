@@ -1,21 +1,15 @@
 package tema02_ejercicio1.Views;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import tema02_ejercicio1.Controllers.DBController;
 
 public class Index extends javax.swing.JFrame {
-    public static DBController contr;
+    public static Connection con;
     
-    public Index() {
-        contr = new DBController();
-        //en caso de que la conexión sea mala
-        if(contr.getCon() == null){
-            JOptionPane.showMessageDialog(null, "Error en la conexión");
-           
-            return;
-        }
+    public Index(Connection con) {
+        Index.con = con;
         initComponents();
         jToolBar1.setFloatable(false);
         setLocationRelativeTo(null);
@@ -172,7 +166,7 @@ public class Index extends javax.swing.JFrame {
     private void bCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCerrarActionPerformed
        
         try {
-            contr.getCon().close();
+            con.close();
             
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Ha habido un problema al cerrar la conexión");

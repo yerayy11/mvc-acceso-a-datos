@@ -11,8 +11,8 @@ public class DBController {
     private final String DB = "BANCOS";
 
     private final String URL_MYSQL = "jdbc:mysql://" + HOST + ":" + PORT_MYSQL + "/" + DB;
-    private final String USER = "bancos";
-    private final String PASSWORD = "bancos";
+    private final String USER = "BANCOS";
+    private final String PASSWORD = "BANCOS";
 
     private Connection con;
 
