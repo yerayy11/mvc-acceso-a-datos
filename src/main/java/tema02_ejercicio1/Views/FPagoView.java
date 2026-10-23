@@ -20,7 +20,7 @@ public class FPagoView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();        
         jToolBar1.setFloatable(false);
-        this.CONTR = new FPagoController(Index.contr.getCon());
+        this.CONTR = new FPagoController(Index.con);
         LSM = jTable1.getSelectionModel();
         rellenarTabla();
         LSM.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -57,13 +57,14 @@ public class FPagoView extends javax.swing.JDialog {
         bCerrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Formas de Pago");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Código", "Descripción", "Número de Recivos"
+                "Código", "Descripción", "Número de Recibos"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -108,7 +109,7 @@ public class FPagoView extends javax.swing.JDialog {
 
         jLabel2.setText("Descripción");
 
-        jLabel3.setText("N Recivos");
+        jLabel3.setText("N Recibos");
 
         bBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
         bBuscar.setToolTipText("Buscar");

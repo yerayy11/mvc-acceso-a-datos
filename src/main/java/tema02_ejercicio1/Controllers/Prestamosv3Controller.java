@@ -33,7 +33,7 @@ public class Prestamosv3Controller {
 
             lista = new ArrayList<>();
 
-            sentencia = "SELECT * FROM PRESTAMOS P INNER JOIN FPAGO F ON F.cCodFPago=P.cCodFPago";
+            sentencia = "SELECT * FROM PRESTAMOS P INNER JOIN FPAGO F ON F.cCodFPago=P.cCodFPago ORDER BY NNUMPREST";
 
             try (PreparedStatement ps = con.prepareStatement(sentencia);
                  ResultSet rs = ps.executeQuery()) {
@@ -70,7 +70,7 @@ public class Prestamosv3Controller {
         
         lista = new ArrayList<>();
         
-        sentencia = "SELECT * FROM PRESTAMOS P INNER JOIN FPAGO F ON F.cCodFPago=P.cCodFPago";
+        sentencia = "SELECT * FROM PRESTAMOS P INNER JOIN FPAGO F ON F.cCodFPago=P.cCodFPago ORDER BY NNUMPREST";
         
          try (PreparedStatement ps = con.prepareStatement(sentencia);
                  ResultSet rs = ps.executeQuery()) {
