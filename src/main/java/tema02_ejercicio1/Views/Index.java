@@ -252,6 +252,7 @@ public class Index extends javax.swing.JFrame {
                      txtAreaMiembros.append("- Luis Hueltes Ortega\n");
                      txtAreaMiembros.append("- Francisco Javier Castellano Soto\n");
                      txtAreaMiembros.append("- Yeray Martínez Mochón\n");
+                    txtAreaMiembros.append("- Marcos Carrión López\n");
 
                 break;
                 
@@ -262,6 +263,7 @@ public class Index extends javax.swing.JFrame {
                      txtAreaMiembros.append("- Luis Hueltes Ortega\n");
                      txtAreaMiembros.append("- Francisco Javier Castellano Soto\n");
                      txtAreaMiembros.append("- Yeray Martínez Mochón\n");
+                    txtAreaMiembros.append("- Marcos Carrión López\n");
                 break;
                 
                 
