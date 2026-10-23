@@ -33,7 +33,7 @@ public class Prestamosv3Controller {
 
             lista = new ArrayList<>();
 
-            sentencia = "SELECT * FROM PRESTAMOS";
+            sentencia = "SELECT * FROM PRESTAMOS P INNER JOIN FPAGO F ON F.cCodFPago=P.cCodFPago";
 
             try (PreparedStatement ps = con.prepareStatement(sentencia);
                  ResultSet rs = ps.executeQuery()) {
@@ -42,13 +42,16 @@ public class Prestamosv3Controller {
 
                     prestamo = new Prestamov3();
 
-                    prestamo.setnNumPrest(rs.getInt(1));
+                    prestamo.setnNumPrest(rs.getInt("nNumPrest"));
                     prestamo.setdFecPrest(rs.getDate("dFecPrest").toLocalDate());
-                    prestamo.setnImpPrest(rs.getInt(3));
-                    prestamo.setnImpReci(rs.getInt(4));
+                    prestamo.setnImpPrest(rs.getInt("nImpPrest"));
+                    prestamo.setnImpReci(rs.getInt("nImpReci"));
 
-                    FPago fpago = FPC.findById(new FPago(rs.getString(5),null,0));
-
+                    FPago fpago = new FPago();
+                    fpago.setcCodFPago(rs.getString("cCodFPago"));
+                    fpago.setcDesFPago(rs.getString("cDesFPago"));
+                    fpago.setnRecibos(rs.getInt("nRecibos"));
+                    
                     prestamo.setcCodFPago(fpago);
 
                     lista.add(prestamo);
@@ -67,7 +70,7 @@ public class Prestamosv3Controller {
         
         lista = new ArrayList<>();
         
-        sentencia = "SELECT * FROM PRESTAMOS";
+        sentencia = "SELECT * FROM PRESTAMOS P INNER JOIN FPAGO F ON F.cCodFPago=P.cCodFPago";
         
          try (PreparedStatement ps = con.prepareStatement(sentencia);
                  ResultSet rs = ps.executeQuery()) {
@@ -76,13 +79,16 @@ public class Prestamosv3Controller {
 
                     prestamo = new Prestamov3();
 
-                    prestamo.setnNumPrest(rs.getInt(1));
+                    prestamo.setnNumPrest(rs.getInt("nNumPrest"));
                     prestamo.setdFecPrest(rs.getDate("dFecPrest").toLocalDate());
-                    prestamo.setnImpPrest(rs.getInt(3));
-                    prestamo.setnImpReci(rs.getInt(4));
+                    prestamo.setnImpPrest(rs.getInt("nImpPrest"));
+                    prestamo.setnImpReci(rs.getInt("nImpReci"));
 
-                    FPago fpago = FPC.findById(new FPago(rs.getString(5),null,0));
-
+                    FPago fpago = new FPago();
+                    fpago.setcCodFPago(rs.getString("cCodFPago"));
+                    fpago.setcDesFPago(rs.getString("cDesFPago"));
+                    fpago.setnRecibos(rs.getInt("nRecibos"));
+                    
                     prestamo.setcCodFPago(fpago);
                     
                     ArrayList<Recibov1> recibos = RC.findByPrestamoId(new Prestamov3(prestamo.getnNumPrest(), null, 0,0, null, null));
