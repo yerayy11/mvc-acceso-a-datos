@@ -47,7 +47,7 @@ public class Recibosv1Controller {
     public ArrayList<Recibov1> findByPrestamoId(Prestamov3 prestamo){
         ArrayList<Recibov1> lista = new ArrayList<>();
         
-        String sql = "SELECT * FROM RECIBOS WHERE NNUMPREST = ?";
+        String sql = "SELECT * FROM RECIBOS WHERE NNUMPREST = ? ORDER BY NNUMRECIB";
         
         try(PreparedStatement ps = con.prepareStatement(sql)){
             
