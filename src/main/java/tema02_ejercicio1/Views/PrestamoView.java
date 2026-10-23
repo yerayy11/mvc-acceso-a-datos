@@ -24,10 +24,12 @@ public class PrestamoView extends javax.swing.JDialog {
     private final Recibosv1Controller RV3C;
     private Recibov1 r;
     private int filaSeleccionada = 0;
+    private Index index;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        index = new Index();
         jToolBar1.setFloatable(false);
         FPC= new FPagoController(Index.contr.getCon());
         RV3C= new Recibosv1Controller(Index.contr.getCon());
@@ -49,11 +51,8 @@ public class PrestamoView extends javax.swing.JDialog {
                     jcFormasPago.setSelectedItem(jtPrestamos.getValueAt(fila, 4));
                     actualizarTablaRecibos();
                 }
-                
             }
-
         });
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -125,7 +124,6 @@ public class PrestamoView extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        jtPrestamos.setColumnSelectionAllowed(true);
         jtPrestamos.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jtPrestamos);
         jtPrestamos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -158,6 +156,8 @@ public class PrestamoView extends javax.swing.JDialog {
         jLabel4.setText("Importe recibido");
 
         jLabel5.setText("Forma de Pago");
+
+        txtFechaPrestamo.setEditable(false);
 
         txtImpRecibido.setEditable(false);
 
@@ -320,11 +320,36 @@ public class PrestamoView extends javax.swing.JDialog {
     }//GEN-LAST:event_bBajaActionPerformed
 
     private void bAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAltaActionPerformed
-
         p= new Prestamov3();
-        p.setnNumPrest(Integer.parseInt(txtNPrestamo.getText()));
-        p.setdFecPrest(LocalDate.parse(txtFechaPrestamo.getText()));
-        p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
+        switch (this.index.comprobarCampo(txtNPrestamo.getText())) {
+            case 0:
+                p.setnNumPrest(Integer.parseInt(txtNPrestamo.getText()));
+                break;
+            case -1:
+                JOptionPane.showMessageDialog(this, "El Número de préstamo solo acepta números.");
+                return;
+            case -2:
+                JOptionPane.showMessageDialog(this, "El Número de préstamo tiene que ser mayor o igual que 0.");
+                return;
+            default:
+                JOptionPane.showMessageDialog(this, "Error con el campo Número de préstamo.");
+                return;
+        }
+        p.setdFecPrest(LocalDate.now());
+        switch (this.index.comprobarCampo(txtImpPrestamo.getText())) {
+            case 0:
+                p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
+                break;
+            case -1:
+                JOptionPane.showMessageDialog(this, "El Importe del préstamo solo acepta números.");
+                return;
+            case -2:
+                JOptionPane.showMessageDialog(this, "El Importe del préstamo tiene que ser mayor o igual que 0.");
+                return;
+            default:
+                JOptionPane.showMessageDialog(this, "Error con el campo Importe del préstamo.");
+                return;
+        }       
         p.setnImpReci(0);
         fp= new FPago();
         fp= (FPago) jcFormasPago.getSelectedItem();
@@ -464,4 +489,5 @@ public class PrestamoView extends javax.swing.JDialog {
             });
         }
     }
+    
 }

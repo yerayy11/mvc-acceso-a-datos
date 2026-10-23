@@ -218,6 +218,18 @@ public class Index extends javax.swing.JFrame {
         }
         
     }
+    
+    public int comprobarCampo(String txt) {
+        try {
+            int comprobacion = Integer.parseInt(txt);
+            if (comprobacion < 0) {
+                return -2;
+            }
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+        return 0;
+    }
 
     private void rellenarTxtArea() {
         
@@ -235,7 +247,7 @@ public class Index extends javax.swing.JFrame {
                 
             case "Informáticos":
                      txtAreaMiembros.append("- Miguel Ángel López Molina\n");
-                     txtAreaMiembros.append("-Ángel López Franco \n");
+                     txtAreaMiembros.append("- Ángel López Franco \n");
                    
 
                 break;

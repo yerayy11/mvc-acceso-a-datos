@@ -35,7 +35,6 @@ public class FPagoView extends javax.swing.JDialog {
             }
         });
         
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -75,7 +74,6 @@ public class FPagoView extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setColumnSelectionAllowed(true);
         jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
         jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
