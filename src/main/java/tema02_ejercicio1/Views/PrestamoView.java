@@ -1,6 +1,7 @@
 package tema02_ejercicio1.Views;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -25,10 +26,12 @@ public class PrestamoView extends javax.swing.JDialog {
     private Recibov1 r;
     private int filaSeleccionada = 0;
     private final Index INDEX;
+    private final DateTimeFormatter FORMATTER;
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         INDEX = (Index) parent;
         jToolBar1.setFloatable(false);
         FPC= new FPagoController(Index.con);
@@ -449,7 +452,7 @@ public class PrestamoView extends javax.swing.JDialog {
         for (Prestamov3 prestamo : lista) {
             DTM_PRES.addRow(new Object[]{
             prestamo.getnNumPrest(),
-            prestamo.getdFecPrest(),
+            FORMATTER.format(prestamo.getdFecPrest()),
             prestamo.getnImpPrest(),
             prestamo.getnImpReci(),
             prestamo.getcCodFPago()    
@@ -473,12 +476,15 @@ public class PrestamoView extends javax.swing.JDialog {
         ArrayList<Recibov1> lista= RV3C.findByPrestamoId(p);
         DTM_REC.setRowCount(0);
         for (Recibov1 rec : lista) {
+            String fechaPago;
+            if(rec.getdFecPago() == null) fechaPago = null;
+            else fechaPago = FORMATTER.format(rec.getdFecPago());
             DTM_REC.addRow(new Object[]{
             rec.getnNumPrest(),
             rec.getnNumRecib(),
-            rec.getdFecRec(),
+            FORMATTER.format(rec.getdFecRec()),
             rec.getnImpRec(),
-            rec.getdFecPago()
+            fechaPago
             });
         }
     }
