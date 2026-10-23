@@ -52,9 +52,9 @@ INSERT INTO FPAGO (cCodFPago, cDesFPago, nRecibos) VALUES ('TR', 'Transferencia 
 INSERT INTO FPAGO (cCodFPago, cDesFPago, nRecibos) VALUES ('TC', 'Tarjeta de Crédito', 6);
 
 INSERT INTO PRESTAMOS (nNumPrest, dFecPrest, nImpPrest, nImpReci, cCodFPago)
-VALUES (101, '2026-01-15', 12000, 1000, 'TR');
+VALUES (101, '2026-01-15', 3000, 1000, 'TR');
 INSERT INTO PRESTAMOS (nNumPrest, dFecPrest, nImpPrest, nImpReci, cCodFPago)
-VALUES (102, '2026-02-01', 3000, 500, 'TC');
+VALUES (102, '2026-02-01', 1000, 500, 'TC');
 INSERT INTO PRESTAMOS (nNumPrest, dFecPrest, nImpPrest, nImpReci, cCodFPago)
 VALUES (103, '2026-03-10', 600, 600, 'EF');
 
