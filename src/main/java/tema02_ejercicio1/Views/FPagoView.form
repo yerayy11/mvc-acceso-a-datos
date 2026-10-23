@@ -111,7 +111,7 @@
               <Table columnCount="3" rowCount="0">
                 <Column editable="false" title="C&#xf3;digo" type="java.lang.Object"/>
                 <Column editable="true" title="Descripci&#xf3;n" type="java.lang.Object"/>
-                <Column editable="true" title="N&#xfa;mero de Recivos" type="java.lang.Object"/>
+                <Column editable="true" title="N&#xfa;mero de Recibos" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -203,7 +203,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="N Recivos"/>
+        <Property name="text" type="java.lang.String" value="N Recibos"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="tCodigo">

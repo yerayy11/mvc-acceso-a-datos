@@ -64,7 +64,7 @@ public class FPagoView extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Código", "Descripción", "Número de Recivos"
+                "Código", "Descripción", "Número de Recibos"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -109,7 +109,7 @@ public class FPagoView extends javax.swing.JDialog {
 
         jLabel2.setText("Descripción");
 
-        jLabel3.setText("N Recivos");
+        jLabel3.setText("N Recibos");
 
         bBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/buscar.png"))); // NOI18N
         bBuscar.setToolTipText("Buscar");

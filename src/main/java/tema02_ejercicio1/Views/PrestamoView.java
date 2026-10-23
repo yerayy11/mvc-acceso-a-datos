@@ -157,6 +157,8 @@ public class PrestamoView extends javax.swing.JDialog {
 
         jLabel5.setText("Forma de Pago");
 
+        txtFechaPrestamo.setEditable(false);
+
         txtImpRecibido.setEditable(false);
 
         jcFormasPago.setModel(new javax.swing.DefaultComboBoxModel<>());
@@ -165,6 +167,7 @@ public class PrestamoView extends javax.swing.JDialog {
         bBuscar.setToolTipText("Buscar");
         bBuscar.addActionListener(this::bBuscarActionPerformed);
 
+        bPagarRecibo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/pagarRecibo.png"))); // NOI18N
         bPagarRecibo.setText("Pagar Recibo");
         bPagarRecibo.addActionListener(this::bPagarReciboActionPerformed);
 
@@ -372,7 +375,7 @@ public class PrestamoView extends javax.swing.JDialog {
         */
         p= new Prestamov3();
         p.setnNumPrest(Integer.parseInt(jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 0).toString()));
-        p.setdFecPrest(LocalDate.parse(txtFechaPrestamo.getText()));
+        p.setdFecPrest(LocalDate.now());
         p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
         p.setnImpReci(Integer.parseInt(jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 3).toString()));
         fp= new FPago();
