@@ -5,8 +5,8 @@ Trabajo en grupo de Acceso a Datos (2º DAM): aplicación de escritorio en Java 
 ## Funcionalidad
 
 - **Formas de pago:** alta, baja, modificación y búsqueda.
-- **Préstamos:** alta (genera los recibos con el procedimiento `sp_GENERARRECIBOS`), baja y modificación (solo si todavía no se ha pagado ningún recibo; al modificar se regeneran los recibos) y búsqueda.
-- **Recibos:** consulta de los recibos de cada préstamo y pago de recibos (al pagar se actualiza el importe recibido del préstamo).
+- **Préstamos:** alta (genera los recibos con el procedimiento `sp_GENERARRECIBOS`), baja y modificación (solo si todavía no se ha pagado ningún recibo; al modificar se regeneran los recibos) y búsqueda. Al borrar un préstamo, sus recibos se borran solos gracias a `ON DELETE CASCADE` en la tabla `RECIBOS`.
+- **Recibos:** consulta de los recibos de cada préstamo y pago de recibos. Los recibos se pagan en orden: no se puede pagar uno si hay recibos anteriores del mismo préstamo sin pagar. Al pagar se actualiza el importe recibido del préstamo.
 
 ## Requisitos
 
@@ -43,7 +43,8 @@ Los datos de conexión están en `DBController`: `localhost:3306`, base de datos
 | `Access denied for user` | Los nombres de usuario de MySQL distinguen mayúsculas: debe ser `bancos` en minúsculas. Vuelve a ejecutar el script como root. |
 | Error al compilar | Que NetBeans use el JDK 26 (Tools → Java Platforms y propiedades del proyecto). |
 | `PROCEDURE ... does not exist` | El script no se ejecutó entero. Usa Workbench o la consola `mysql` (otros clientes no entienden `DELIMITER`). |
-| Instalaste una versión anterior del script | Vuelve a ejecutar el script actual: recrea el usuario y los permisos. |
+| "No se ha podido eliminar" al borrar un préstamo que no tiene pagos | Tu base de datos es anterior al `ON DELETE CASCADE`: vuelve a ejecutar el script actual. |
+| Instalaste una versión anterior del script | Vuelve a ejecutar el script actual: recrea el usuario, los permisos y las tablas. |
 
 ## Estructura del proyecto
 
