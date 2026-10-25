@@ -14,8 +14,8 @@ public class Launcher {
         Connection con;
         if((con = contr.getCon()) == null){
             JOptionPane.showMessageDialog(null, "Error en la conexión");
-           
-            return;
+            //se termina la aplicación indicando con el código 1 que ha habido un error
+            System.exit(1);
         }
         new Index(con).setVisible(true);
         

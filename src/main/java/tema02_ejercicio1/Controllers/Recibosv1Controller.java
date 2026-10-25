@@ -12,6 +12,9 @@ import tema02_ejercicio1.Models.*;
 
 public class Recibosv1Controller {
     
+    //Valor que devuelve pagarRecibo cuando hay recibos anteriores del mismo préstamo sin pagar
+    public static final int ANTERIORES_PENDIENTES = -2;
+    
     private Connection con;
     private  Prestamosv3Controller pv3c;
     
@@ -84,8 +87,20 @@ public class Recibosv1Controller {
         return lista;
     }
     
+    /*
+     * Paga un recibo. Devuelve:
+     *   > 0  el recibo se ha pagado
+     *   0    no se ha pagado (no existe o ya estaba pagado)
+     *   -1   error de base de datos
+     *   -2   ANTERIORES_PENDIENTES: hay recibos anteriores del préstamo sin pagar
+     */
     public int pagarRecibo(Recibov1 recibo){
     int recibosPagados = -1;
+    
+    //Los recibos se pagan en orden: no se puede pagar uno si hay otro anterior sin pagar
+    if(hayRecibosAnterioresSinPagar(recibo)){
+        return ANTERIORES_PENDIENTES;
+    }
     
     String sql = "UPDATE RECIBOS SET DFECPAGO = CURDATE() WHERE NNUMRECIB = ? AND NNUMPREST = ? AND DFECPAGO IS NULL";
     
@@ -108,6 +123,27 @@ public class Recibosv1Controller {
     
     return recibosPagados;
 }
+    
+    //Cuenta los recibos del mismo préstamo con número menor (más antiguos) que todavía no tienen fecha de pago
+    private boolean hayRecibosAnterioresSinPagar(Recibov1 recibo){
+        
+        String sql = "SELECT COUNT(*) FROM RECIBOS WHERE NNUMPREST = ? AND NNUMRECIB < ? AND DFECPAGO IS NULL";
+        
+        try(PreparedStatement ps = con.prepareStatement(sql)){
+            
+            ps.setInt(1, recibo.getnNumPrest());
+            ps.setInt(2, recibo.getnNumRecib());
+            
+            try(ResultSet rs = ps.executeQuery()){
+                return rs.next() && rs.getInt(1) > 0;
+            }
+            
+        } catch (SQLException ex) {
+            System.err.println("Error al comprobar los recibos anteriores: " + ex.getMessage());
+            //ante la duda no se paga
+            return true;
+        }
+    }
     
     public int deleteByPrestamoId(Prestamov3 prestamo){
         int filasBorradas = -1;
