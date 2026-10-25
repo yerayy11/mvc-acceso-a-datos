@@ -174,7 +174,8 @@ public class Index extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ha habido un problema al cerrar la conexión");
             System.err.println("Error: "+ex.getMessage());
         }
-        this.dispose();
+        //se termina la aplicación completa (código 0: cierre normal)
+        System.exit(0);
     }//GEN-LAST:event_bCerrarActionPerformed
 
     private void jcRolesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcRolesItemStateChanged

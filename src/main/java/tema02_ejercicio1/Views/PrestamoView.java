@@ -27,6 +27,8 @@ public class PrestamoView extends javax.swing.JDialog {
     private int filaSeleccionada = 0;
     private final Index INDEX;
     private final DateTimeFormatter FORMATTER;
+    //préstamos cargados con findAllEager: cada uno trae su lista de recibos (getListaRecibos)
+    private ArrayList<Prestamov3> listaPrestamos = new ArrayList<>();
     
     public PrestamoView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -374,13 +376,28 @@ public class PrestamoView extends javax.swing.JDialog {
             return; 
         }
         /*Al modificar no se podra cambiar ni la clave principal ni el importe recibido,
-        lo demas se podra cambiar si todavia no se ha empezado a paggar nada
+        lo demas se podra cambiar si todavia no se ha empezado a pagar nada
         */
         p= new Prestamov3();
-        p.setnNumPrest(Integer.parseInt(jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 0).toString()));
-        p.setdFecPrest(LocalDate.now());
-        p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
-        p.setnImpReci(Integer.parseInt(jtPrestamos.getValueAt(jtPrestamos.getSelectedRow(), 3).toString()));
+        p.setnNumPrest(Integer.parseInt(jtPrestamos.getValueAt(seleccionadas, 0).toString()));
+        //la fecha del préstamo no cambia al modificarlo: se conserva la que ya tenía
+        Prestamov3 original = buscarPrestamo(p.getnNumPrest());
+        p.setdFecPrest(original != null ? original.getdFecPrest() : LocalDate.now());
+        switch (this.INDEX.comprobarCampo(txtImpPrestamo.getText())) {
+            case 0:
+                p.setnImpPrest(Integer.parseInt(txtImpPrestamo.getText()));
+                break;
+            case -1:
+                JOptionPane.showMessageDialog(this, "El Importe del préstamo solo acepta números.");
+                return;
+            case -2:
+                JOptionPane.showMessageDialog(this, "El Importe del préstamo tiene que ser mayor o igual que 0.");
+                return;
+            default:
+                JOptionPane.showMessageDialog(this, "Error con el campo Importe del préstamo.");
+                return;
+        }
+        p.setnImpReci(Integer.parseInt(jtPrestamos.getValueAt(seleccionadas, 3).toString()));
         fp= new FPago();
         fp= (FPago) jcFormasPago.getSelectedItem();
         p.setcCodFPago(fp);
@@ -406,6 +423,11 @@ public class PrestamoView extends javax.swing.JDialog {
         r.setnNumRecib(numRecibo);
         r.setnNumPrest(numPrestamo);
         int pagado= RV3C.pagarRecibo(r);
+        //los recibos se pagan en orden: no se puede pagar uno si hay anteriores sin pagar
+        if(pagado == Recibosv1Controller.ANTERIORES_PENDIENTES){
+            JOptionPane.showMessageDialog(this, "Primero hay que pagar los recibos anteriores de este préstamo");
+            return;
+        }
         if(pagado <=0){
             JOptionPane.showMessageDialog(this, "No se ha podido pagar el recibo");
             return; 
@@ -446,10 +468,10 @@ public class PrestamoView extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void actualizarTabla() {
-    DTM_PRES.setRowCount(0);
-    ArrayList<Prestamov3> lista;
-    lista= PV3C.findAllLazy();
-        for (Prestamov3 prestamo : lista) {
+        DTM_PRES.setRowCount(0);
+        //findAllEager devuelve cada préstamo con su lista de recibos ya cargada
+        listaPrestamos = PV3C.findAllEager();
+        for (Prestamov3 prestamo : listaPrestamos) {
             DTM_PRES.addRow(new Object[]{
             prestamo.getnNumPrest(),
             FORMATTER.format(prestamo.getdFecPrest()),
@@ -468,14 +490,25 @@ public class PrestamoView extends javax.swing.JDialog {
         }
     }
     
+    //Busca en la lista cargada el préstamo con ese número (o null si no está)
+    private Prestamov3 buscarPrestamo(int numPrestamo) {
+        for (Prestamov3 prestamo : listaPrestamos) {
+            if (prestamo.getnNumPrest() == numPrestamo) {
+                return prestamo;
+            }
+        }
+        return null;
+    }
+    
+    //Rellena la tabla de recibos recorriendo la lista de recibos (getListaRecibos) del préstamo seleccionado
     private void actualizarTablaRecibos() {
+        DTM_REC.setRowCount(0);
         int fila = jtPrestamos.getSelectedRow();
         if(fila != -1) filaSeleccionada = fila;
-        p=new Prestamov3();
-        p.setnNumPrest((int) jtPrestamos.getValueAt(filaSeleccionada, 0));
-        ArrayList<Recibov1> lista= RV3C.findByPrestamoId(p);
-        DTM_REC.setRowCount(0);
-        for (Recibov1 rec : lista) {
+        if(filaSeleccionada < 0 || filaSeleccionada >= jtPrestamos.getRowCount()) return;
+        Prestamov3 seleccionado = buscarPrestamo((int) jtPrestamos.getValueAt(filaSeleccionada, 0));
+        if(seleccionado == null || seleccionado.getListaRecibos() == null) return;
+        for (Recibov1 rec : seleccionado.getListaRecibos()) {
             String fechaPago;
             if(rec.getdFecPago() == null) fechaPago = null;
             else fechaPago = FORMATTER.format(rec.getdFecPago());
