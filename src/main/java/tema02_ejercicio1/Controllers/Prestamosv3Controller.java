@@ -190,6 +190,7 @@ public Prestamov3 findById(Prestamov3 pId) {
 
             filasActualizadas = ps.executeUpdate();
             
+            //al modificar el préstamo se borran sus recibos y se vuelven a generar con los nuevos datos
             RC.deleteByPrestamoId(prestamo);
 
             RC.generarRecibos(prestamo);
@@ -200,16 +201,13 @@ public Prestamov3 findById(Prestamov3 pId) {
 
         return filasActualizadas;
     }
+    
     public int delete(Prestamov3 prestamo) {
-
-
 
         if(tienePrestamosPagados(prestamo))return 0;
 
-        int recibosBorrados = RC.deleteByPrestamoId(prestamo);
-
-        if(recibosBorrados < 0) return 0;
-
+        //Los recibos del préstamo no se borran a mano: la clave foránea de RECIBOS tiene ON DELETE CASCADE
+        //y la base de datos los elimina sola al borrar el préstamo.
         sentencia = "DELETE FROM PRESTAMOS WHERE nNumPrest = ?";
 
         try (PreparedStatement ps = con.prepareStatement(sentencia)) {
